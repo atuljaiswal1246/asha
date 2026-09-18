@@ -1,0 +1,26 @@
+# Jarvis — self-host with docker compose.
+#
+#   1. cp prototype/.env.example prototype/.env   # add your key(s)
+#   2. docker compose -f deploy/docker-compose.yml up -d --build
+#   3. open http://<server>:8000
+#
+services:
+  jarvis:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: jarvis:latest
+    restart: unless-stopped
+    ports:
+      - "8000:8000"   # UI (static)
+      - "7860:7860"   # assistant WebSocket (mic/chat + agent)
+    # Keys/model config. Copy prototype/.env.example -> prototype/.env first.
+    env_file:
+      - ../prototype/.env
+    volumes:
+      - jarvis_data:/srv/prototype/data      # sessions, memory, skills, prefs
+      - jarvis_models:/srv/models            # (baked in image; volume optional)
+
+volumes:
+  jarvis_data:
+  jarvis_models:

@@ -1,0 +1,18 @@
+# Jarvis — optional reverse proxy with automatic HTTPS (Caddy).
+#
+#   caddy run --config deploy/Caddyfile      # or drop into /etc/caddy/Caddyfile
+#
+# Replace jarvis.example.com with your domain (A record -> this server).
+# Serves the UI over HTTPS and proxies the assistant WebSocket at /ws, so the
+# browser uses wss://<domain>/ws (HTTP/2-friendly). The daemon still listens on
+# 8000/7860 locally; only Caddy is exposed.
+jarvis.example.com {
+    encode zstd gzip
+
+    # Assistant WebSocket → the pipecat WS bot.
+    @ws path /ws /ws/*
+    reverse_proxy @ws 127.0.0.1:7860
+
+    # Everything else → the static UI.
+    reverse_proxy 127.0.0.1:8000
+}

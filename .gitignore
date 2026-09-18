@@ -1,0 +1,61 @@
+# secrets / local config
+.env
+*.env
+.env.*
+!.env.example
+.dev.vars
+
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# macos
+.DS_Store
+
+# upstream research repos — re-clone per PROTOTYPE_HANDOFF.md section 4 (read-only refs)
+/reference/opencode/
+/pipecat/
+/sherpa-onnx/
+/silero-vad/
+/kokoro/
+/leon/
+/vox-rust/
+/sorachio-sts/
+/ai-voice-assistant/
+/whisper-loop/
+/parlor/
+/vox-agent/
+/macos-local-voice-agents/
+/moonshine/
+/vui/
+/saa-sdk/
+/eva/
+/BentoVoiceAgent/
+/VoiceMem/
+/bailing/
+/hermes-agent/
+
+# heavy experimental UI (Vite + node_modules) — not part of the app
+/prototype/ui/webfront/
+
+# future local runtime data (memory files, state.db — never commit)
+/prototype/data/
+
+# generated images (runtime output — never commit)
+/prototype/ui/static/generated/
+
+# benchmark scratch work dirs (results JSON is committed; scratch is not)
+/bench/work/
+
+# untracked helper notebooks (local scratch, never committed)
+/deepseek_helper.ipynb
+
+# local scratch / runtime logs (never committed)
+/0
+/prototype/ui/idle
+
+# packaging build artifacts (large)
+prototype/packaging/dist/
+prototype/packaging/.build/
+prototype/packaging/.build-win/

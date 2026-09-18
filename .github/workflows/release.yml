@@ -1,0 +1,87 @@
+name: release
+
+# Build the Jarvis installers for macOS + Windows and publish a GitHub Release.
+# Run manually (Actions → release → Run workflow) or push a tag like v0.1.0.
+# The Release gets Jarvis-<ver>.dmg (Mac) and Jarvis-Setup-<ver>.exe (Windows).
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  macos:
+    # macOS 15 (arm64): moonshine-voice ships a macosx_15_0_arm64 wheel, so the
+    # runner must be >= macOS 15.
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bake keys (secret JARVIS_ENV_B64)
+        shell: bash
+        env:
+          ENV_B64: ${{ secrets.JARVIS_ENV_B64 }}
+        run: |
+          if [ -n "$ENV_B64" ]; then
+            printf '%s' "$ENV_B64" | base64 -d > prototype/.env && echo "wrote prototype/.env from secret"
+          else
+            echo "no JARVIS_ENV_B64 secret set - building keyless (BYOK)"
+          fi
+      - name: Build .app + .dmg
+        run: bash prototype/packaging/build_macos.sh arm64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Jarvis-macos
+          path: prototype/packaging/dist/*.dmg
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bake keys (secret JARVIS_ENV_B64)
+        shell: bash
+        env:
+          ENV_B64: ${{ secrets.JARVIS_ENV_B64 }}
+        run: |
+          if [ -n "$ENV_B64" ]; then
+            printf '%s' "$ENV_B64" | base64 -d > prototype/.env && echo "wrote prototype/.env from secret"
+          else
+            echo "no JARVIS_ENV_B64 secret set - building keyless (BYOK)"
+          fi
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress || true
+      - name: Build bundle + installer
+        shell: powershell
+        run: powershell -ExecutionPolicy Bypass -File prototype/packaging/build_windows.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Jarvis-windows
+          path: prototype/packaging/dist/*.exe
+
+  release:
+    needs: [macos, windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Read version
+        id: v
+        run: echo "version=$(tr -d '[:space:]' < prototype/packaging/VERSION)" >> "$GITHUB_OUTPUT"
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.v.outputs.version }}
+          name: Jarvis v${{ steps.v.outputs.version }}
+          generate_release_notes: true
+          make_latest: true
+          files: |
+            artifacts/**/*.dmg
+            artifacts/**/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

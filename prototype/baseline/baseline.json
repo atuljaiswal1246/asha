@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "phase": "0-polished",
+    "llama_server": "http://127.0.0.1:8080/v1 (llama.cpp, Qwen3.5-4B-Q4_K_M GGUF)",
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "rnnoise": false,
+    "interrupt_enabled": true,
+    "llm": {
+      "LLM_MODEL": "qwen3.5-4b",
+      "LLM_MAX_TOKENS": "128",
+      "LLM_TEMPERATURE": "0.7",
+      "LLM_TOP_P": "0.8"
+    },
+    "stt": {
+      "STT_MODEL": "small-streaming",
+      "STT_LANGUAGE": "en"
+    },
+    "tts": {
+      "voice": "af_heart"
+    },
+    "vad": {
+      "VAD_CONFIDENCE": "0.75",
+      "VAD_START_SECS": "0.25",
+      "VAD_STOP_SECS": "0.25",
+      "VAD_MIN_VOLUME": "0.7"
+    }
+  },
+  "turns": [
+    {
+      "index": 1,
+      "transcript": "Hello, how are you?",
+      "response_text": "I'm doing great, thanks for asking! How about you?",
+      "barged_in": false,
+      "stt_ms": 671.1,
+      "stt_after_stop_ms": -4.0,
+      "llm_start_ms": 594.5,
+      "ttfb_ms": 2563.3,
+      "ttfb_after_stop_ms": 1888.2,
+      "tts_render_ms": 430.9,
+      "total_ms": 2994.2
+    },
+    {
+      "index": 2,
+      "transcript": "Yeah I'm also afraid.",
+      "response_text": "It sounds like you're feeling overwhelmed; remember that you don't have to carry it alone. Would you like to share what's on your mind?",
+      "barged_in": false,
+      "stt_ms": 511.1,
+      "stt_after_stop_ms": -3.8,
+      "llm_start_ms": 584.6,
+      "ttfb_ms": 3808.8,
+      "ttfb_after_stop_ms": 3293.9,
+      "tts_render_ms": 610.8,
+      "total_ms": 4419.5
+    },
+    {
+      "index": 3,
+      "transcript": "No, no, nothing like that.",
+      "response_text": "I understand, and I'm here if you ever want to talk about something else.",
+      "barged_in": false,
+      "stt_ms": 1280.6,
+      "stt_after_stop_ms": -5.1,
+      "llm_start_ms": 947.6,
+      "ttfb_ms": 4432.2,
+      "ttfb_after_stop_ms": 3146.5,
+      "tts_render_ms": 0.0,
+      "total_ms": 4432.2
+    },
+    {
+      "index": 4,
+      "transcript": "Yeah. How fast can you talk?",
+      "response_text": "I speak at a normal pace, so you don't have to worry about keeping up!",
+      "barged_in": false,
+      "stt_ms": 1011.5,
+      "stt_after_stop_ms": -4.5,
+      "llm_start_ms": 550.4,
+      "ttfb_ms": 3745.6,
+      "ttfb_after_stop_ms": 2729.7,
+      "tts_render_ms": 0.0,
+      "total_ms": 3745.6
+    },
+    {
+      "index": 5,
+      "transcript": "I can talk fast.",
+      "response_text": "That is very kind of you to worry about me!",
+      "barged_in": false,
+      "stt_ms": 3664.8,
+      "stt_after_stop_ms": -2856.0,
+      "llm_start_ms": 3401.3,
+      "ttfb_ms": 8424.1,
+      "ttfb_after_stop_ms": 1903.4,
+      "tts_render_ms": 0.0,
+      "total_ms": 8424.1
+    },
+    {
+      "index": 6,
+      "transcript": "Yeah. Or tell?",
+      "response_text": "I generate my responses instantly, so I'm always ready to tell you what you need!",
+      "barged_in": false,
+      "stt_ms": 442.8,
+      "stt_after_stop_ms": -3.4,
+      "llm_start_ms": 538.1,
+      "ttfb_ms": 3455.8,
+      "ttfb_after_stop_ms": 3009.6,
+      "tts_render_ms": 0.0,
+      "total_ms": 3455.8
+    },
+    {
+      "index": 7,
+      "transcript": "And tell me again.",
+      "response_text": "I am ready to tell you whatever you would like to hear.",
+      "barged_in": false,
+      "stt_ms": 778.8,
+      "stt_after_stop_ms": -3.3,
+      "llm_start_ms": 531.2,
+      "ttfb_ms": 2938.0,
+      "ttfb_after_stop_ms": 2155.9,
+      "tts_render_ms": 0.0,
+      "total_ms": 2938.0
+    },
+    {
+      "index": 8,
+      "transcript": "Yeah Now tell me.",
+      "response_text": "I am ready to tell you whatever you would like to hear.",
+      "barged_in": false,
+      "stt_ms": 2397.6,
+      "stt_after_stop_ms": -3.3,
+      "llm_start_ms": 546.4,
+      "ttfb_ms": 4576.8,
+      "ttfb_after_stop_ms": 2175.9,
+      "tts_render_ms": 0.0,
+      "total_ms": 4576.8
+    },
+    {
+      "index": 9,
+      "transcript": "Okay.",
+      "response_text": "Okay, I am listening.",
+      "barged_in": false,
+      "stt_ms": 484.5,
+      "stt_after_stop_ms": -2893.3,
+      "llm_start_ms": 3442.3,
+      "ttfb_ms": 4795.4,
+      "ttfb_after_stop_ms": 1417.7,
+      "tts_render_ms": 0.0,
+      "total_ms": 4795.4
+    }
+  ],
+  "stats": {
+    "turns_total": 9,
+    "turns_complete": 9,
+    "turns_interrupted": 0,
+    "stt_ms_p50": 778.8,
+    "stt_ms_p95": 3664.8,
+    "stt_ms_n": 9,
+    "stt_after_stop_ms_p50": -4.0,
+    "stt_after_stop_ms_p95": -3.3,
+    "stt_after_stop_ms_n": 9,
+    "llm_start_ms_p50": 584.6,
+    "llm_start_ms_p95": 3442.3,
+    "llm_start_ms_n": 9,
+    "ttfb_ms_p50": 3808.8,
+    "ttfb_ms_p95": 8424.1,
+    "ttfb_ms_n": 9,
+    "ttfb_after_stop_ms_p50": 2175.9,
+    "ttfb_after_stop_ms_p95": 3293.9,
+    "ttfb_after_stop_ms_n": 9,
+    "tts_render_ms_p50": 0.0,
+    "tts_render_ms_p95": 610.8,
+    "tts_render_ms_n": 9,
+    "total_ms_p50": 4419.5,
+    "total_ms_p95": 8424.1,
+    "total_ms_n": 9
+  }
+}
