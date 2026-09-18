@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Asha J-Orb</title>
+  <circle cx="352" cy="104" r="52" fill="#8B6CF0"/>
+  <path d="M 352 208 L 352 330 A 96 96 0 0 1 160 330" fill="none" stroke="#8B6CF0" stroke-width="76" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

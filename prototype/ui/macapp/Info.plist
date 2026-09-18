@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>Asha</string>
+    <key>CFBundleDisplayName</key>
+    <string>Asha</string>
+    <key>CFBundleIdentifier</key>
+    <string>local.voice.assistant</string>
+    <key>CFBundleVersion</key>
+    <string>0.1</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.1</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleExecutable</key>
+    <string>VoiceAssistant</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Your voice is processed entirely on this Mac for the local assistant.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Asha uses the camera to see what you're pointing at, on this Mac only.</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+</dict>
+</plist>

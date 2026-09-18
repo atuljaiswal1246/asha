@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Asha — design preview</title>
+<style>
+  :root{
+    --bg:#F6F7FB; --surface:#FFFFFF; --surface2:#F1F3F9; --surface3:#EAEDF5;
+    --border:#E6E8F0; --border2:#D8DCE8;
+    --text:#141826; --t2:#5B6274; --t3:#8B91A1;
+    --accent:#5B5BD6; --accent2:#7C7CF0; --accentsoft:#EEEEFB; --accentink:#2E2E7A;
+    --green:#16A34A; --greensoft:#E7F6EC; --amber:#D97706; --ambersoft:#FBF0DD;
+    --red:#DC2626; --redsoft:#FDECEC; --violet:#7C6CF0;
+    --r:16px; --r-sm:10px;
+    --sh:0 1px 2px rgba(16,24,40,.05), 0 10px 30px rgba(16,24,40,.07);
+    --sh-sm:0 1px 2px rgba(16,24,40,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .preview-note{
+    position:sticky;top:0;z-index:50;background:#141826;color:#C9CEE0;
+    font-size:12px;letter-spacing:.3px;padding:8px 16px;display:flex;gap:10px;align-items:center
+  }
+  .preview-note b{color:#fff}
+  .screen-label{
+    max-width:1240px;margin:34px auto 12px;padding:0 22px;
+    font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--t3)
+  }
+
+  /* ---------- app shell ---------- */
+  .app{
+    max-width:1240px;margin:0 auto 44px;background:var(--surface);
+    border:1px solid var(--border);border-radius:20px;box-shadow:var(--sh);
+    display:grid;grid-template-columns:248px 1fr;overflow:hidden;min-height:660px
+  }
+
+  /* ---------- sidebar ---------- */
+  .side{background:var(--surface);border-right:1px solid var(--border);padding:18px 14px;display:flex;flex-direction:column;gap:22px}
+  .brand{display:flex;align-items:center;gap:11px;padding:2px 4px}
+  .brand .mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent2),var(--accent));
+    color:#fff;font-weight:800;display:grid;place-items:center;box-shadow:0 6px 16px rgba(91,91,214,.35)}
+  .brand .who{font-weight:700;font-size:15px;letter-spacing:-.2px}
+  .brand .sub{font-size:11.5px;color:var(--t3)}
+  .newchat{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px 12px;border:0;border-radius:12px;
+    background:var(--accent);color:#fff;font-weight:650;font-size:13.5px;cursor:pointer;box-shadow:0 6px 16px rgba(91,91,214,.28)}
+  .newchat:hover{background:#4f4fc9}
+  .side-sec-title{font-size:10.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--t3);padding:0 8px;margin-bottom:8px}
+  .side-nav{display:flex;flex-direction:column;gap:2px}
+  .side-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;color:var(--t2);cursor:pointer;font-size:13.5px}
+  .side-item svg{color:var(--t3)}
+  .side-item:hover{background:var(--surface2);color:var(--text)}
+  .side-item.active{background:var(--accentsoft);color:var(--accentink);font-weight:600}
+  .recent{display:flex;flex-direction:column;gap:1px;overflow:hidden}
+  .recent-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;cursor:pointer;color:var(--t2);font-size:13px}
+  .recent-item:hover{background:var(--surface2);color:var(--text)}
+  .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--accent2)}
+  .recent-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .side-foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding:8px 6px;border-top:1px solid var(--border)}
+  .you{width:30px;height:30px;border-radius:50%;background:var(--surface3);color:var(--t2);display:grid;place-items:center;font-weight:700;font-size:12px}
+  .side-foot .st{font-size:12.5px;font-weight:600}
+  .side-foot .st span{display:block;font-size:11px;color:var(--t3);font-weight:500}
+
+  /* ---------- main ---------- */
+  .main{display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+  .topbar{display:flex;align-items:center;justify-content:center;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface);position:relative}
+  .seg{display:inline-flex;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:3px}
+  .seg button{border:0;background:transparent;color:var(--t2);font-weight:600;font-size:13px;padding:7px 20px;border-radius:999px;cursor:pointer}
+  .seg button.on{background:var(--surface);color:var(--accentink);box-shadow:var(--sh-sm)}
+  .body{display:grid;grid-template-columns:1fr 380px;min-height:0;flex:1}
+  .body.full{grid-template-columns:1fr}
+
+  /* voice stage */
+  .stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px 24px;overflow:hidden}
+  .stage::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;
+    background:radial-gradient(circle,rgba(124,124,240,.18),rgba(124,124,240,0) 62%);top:44%;left:50%;transform:translate(-50%,-50%)}
+  .hello{position:relative;text-align:center}
+  .hello h1{margin:0;font-size:30px;letter-spacing:-.6px;font-weight:750}
+  .hello p{margin:6px 0 0;color:var(--t2);font-size:14.5px}
+  .orb{position:relative;width:176px;height:176px;border-radius:50%;
+    background:radial-gradient(circle at 37% 31%,#D9DBFF 0%,#A9AEF4 34%,#6E74D8 70%,#3B418F 100%);
+    box-shadow:0 24px 70px rgba(94,100,220,.42),inset 0 0 44px rgba(255,255,255,.28);
+    animation:breathe 4.4s ease-in-out infinite}
+  .orb::after{content:"";position:absolute;inset:-26px;border-radius:50%;border:1px solid rgba(124,124,240,.35);animation:ring 3.6s ease-out infinite}
+  .orb .shine{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.75),transparent 42%)}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+  @keyframes ring{0%{transform:scale(.9);opacity:.55}100%{transform:scale(1.22);opacity:0}}
+  .microw{display:flex;align-items:center;gap:14px;position:relative}
+  .mic{width:56px;height:56px;border-radius:50%;border:0;background:var(--accent);color:#fff;display:grid;place-items:center;cursor:pointer;
+    box-shadow:0 10px 26px rgba(91,91,214,.4)}
+  .meter{width:150px;height:8px;border-radius:999px;background:var(--surface3);position:relative;overflow:hidden}
+  .meter i{position:absolute;inset:0 62% 0 0;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:999px}
+  .who-label{font-weight:700;font-size:15px;position:relative}
+  .status{color:var(--t3);font-size:13px;position:relative}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;position:relative}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);
+    border-radius:999px;padding:8px 13px;font-size:12.5px;color:var(--t2);cursor:pointer;box-shadow:var(--sh-sm)}
+  .chip:hover{border-color:var(--border2);color:var(--text)}
+
+  /* chat panel */
+  .chatpanel{background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;min-width:0}
+  .chat-scroll{flex:1;overflow:hidden;padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+  .msg{display:flex;gap:9px;max-width:100%}
+  .msg .av{width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700}
+  .msg.bot .av{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff}
+  .msg.user{justify-content:flex-end}
+  .msg.user .av{background:var(--surface3);color:var(--t2)}
+  .bub{padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.5;box-shadow:var(--sh-sm)}
+  .msg.bot .bub{background:var(--surface2);border-bottom-left-radius:5px;color:var(--text)}
+  .msg.user .bub{background:var(--accentsoft);border-bottom-right-radius:5px;color:var(--accentink)}
+  .ts{font-size:10.5px;color:var(--t3);margin-top:5px}
+  .msg.user .wrap{align-items:flex-end;display:flex;flex-direction:column}
+  .msg .wrap{display:flex;flex-direction:column}
+
+  /* bottom strip + input */
+  .strip{display:flex;gap:8px;align-items:center;padding:9px 14px;border-top:1px solid var(--border);background:var(--surface)}
+  .ftrig{display:inline-flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);
+    border-radius:10px;padding:7px 11px;font-size:12.5px;font-weight:550;color:var(--text);cursor:pointer;max-width:240px}
+  .ftrig svg{color:var(--t3)}
+  .ftrig .caret{margin-left:2px}
+  .ftrig.right{margin-left:auto}
+  .composer{display:flex;align-items:center;gap:10px;padding:12px 14px 16px;background:var(--surface)}
+  .clip{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--t2);display:grid;place-items:center;cursor:pointer}
+  .input{flex:1;display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:11px 16px;color:var(--t3)}
+  .send{width:40px;height:40px;border-radius:50%;border:0;background:var(--accent);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 20px rgba(91,91,214,.34)}
+  .micmini{width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 20px rgba(91,91,214,.34);flex:none}
+  .micmini:hover{background:#4f4fc9}
+
+  /* ---------- work view ---------- */
+  .work{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--bg)}
+  .workbar{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border);background:var(--surface);font-size:13px}
+  .workbar .lbl{color:var(--t3);font-weight:600}
+  .workbar .val{font-weight:650}
+  .workbar .change{margin-left:auto;color:var(--accent);font-weight:650;font-size:12.5px;cursor:pointer}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:16px;flex:1;min-height:0}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-sm);display:flex;flex-direction:column;min-height:0;overflow:hidden;transition:box-shadow .15s,border-color .15s}
+  .card:hover{box-shadow:var(--sh);border-color:var(--border2)}
+  .card-h{display:flex;align-items:center;gap:10px;padding:14px 14px 12px}
+  .wavatar{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px}
+  .wavatar.k{background:linear-gradient(135deg,#F2A65A,#E2743A)}
+  .wavatar.r{background:linear-gradient(135deg,#F6D365,#E4A11B)}
+  .wavatar.t{background:linear-gradient(135deg,#8FA2F0,#5B5BD6)}
+  .card-h .nm{font-weight:700;font-size:14px}
+  .card-h .role{font-size:11px;color:var(--t3)}
+  .pill{margin-left:auto;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--greensoft);color:var(--green)}
+  .cfg{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 12px;border-bottom:1px solid var(--border)}
+  .cfg .c{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+    padding:5px 9px;font-size:11.5px;color:var(--t2)}
+  .cfg .c svg{color:var(--t3)}
+  .feed{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--t3);font-size:12.5px;padding:24px}
+  .feed .ghost{width:46px;height:46px;border-radius:14px;background:var(--surface2);display:grid;place-items:center;color:var(--t3)}
+
+  svg{display:block}
+</style>
+</head>
+<body>
+<div class="preview-note"><b>Design preview</b> — a mock of the proposed look (not the live app). Light theme, softer contrast, production-style cards & chrome.</div>
+
+<div class="screen-label">Chat — the voice stage with the conversation beside it</div>
+<div class="app">
+  <!-- sidebar -->
+  <aside class="side">
+    <div class="brand">
+      <div class="mark">A</div>
+      <div>
+        <div class="who">Asha</div>
+        <div class="sub">voice assistant</div>
+      </div>
+    </div>
+    <button class="newchat">＋ New chat</button>
+    <div>
+      <div class="side-sec-title">Library</div>
+      <nav class="side-nav">
+        <div class="side-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Skills</div>
+        <div class="side-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10c0-1.1-.9-2-2-2h-2.5a2.5 2.5 0 0 1 0-5H18a2 2 0 0 0 2-2 9 9 0 0 0-8-1z"/></svg>Memory</div>
+        <div class="side-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3 15H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9 1.6 1.6 0 0 0 4.3 7.2l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9 4.6 1.6 1.6 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1A1.6 1.6 0 0 0 15 4.6a1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.6 1.6 0 0 0 19.4 9v.1A1.6 1.6 0 0 0 21 10a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>Settings</div>
+      </nav>
+    </div>
+    <div style="min-height:0">
+      <div class="side-sec-title">Recent</div>
+      <div class="recent">
+        <div class="recent-item"><span class="dot" style="background:#8F9AE8"></span><span>I'm trying to get my life…</span></div>
+        <div class="recent-item"><span class="dot" style="background:#4ADE80"></span><span>Is that pure London?</span></div>
+        <div class="recent-item"><span class="dot" style="background:#D29922"></span><span>I'm going to focus it on t…</span></div>
+        <div class="recent-item"><span class="dot" style="background:#4ADE80"></span><span>hello asha</span></div>
+        <div class="recent-item"><span class="dot" style="background:#E25555"></span><span>hey there</span></div>
+        <div class="recent-item"><span class="dot" style="background:#8F9AE8"></span><span>This would be something.</span></div>
+      </div>
+    </div>
+    <div class="side-foot">
+      <div class="you">Y</div>
+      <div class="st">You<span>connected</span></div>
+    </div>
+  </aside>
+
+  <!-- main chat -->
+  <section class="main">
+    <div class="topbar">
+      <div class="seg"><button class="on">Chat</button><button>Work</button></div>
+    </div>
+    <div class="body">
+      <div class="stage">
+        <div class="hello">
+          <h1>Hi there,</h1>
+          <p>How can I help you today?</p>
+        </div>
+        <div class="orb"><div class="shine"></div></div>
+        <div class="microw">
+          <button class="mic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>
+          <div class="meter"><i></i></div>
+        </div>
+        <div style="text-align:center">
+          <div class="who-label">Asha</div>
+          <div class="status">I'm listening…</div>
+        </div>
+        <div class="chips">
+          <div class="chip">😊 How are you doing?</div>
+          <div class="chip">🌦 What's the weather in Mumbai?</div>
+          <div class="chip">📖 Tell me a story</div>
+        </div>
+      </div>
+
+      <aside class="chatpanel">
+        <div class="chat-scroll">
+          <div class="msg bot"><div class="av">A</div><div class="wrap"><div class="bub">Hey, I'm Asha — nice to meet you!</div><div class="ts">11:48 am</div></div></div>
+          <div class="msg user"><div class="wrap"><div class="bub">Can you set up the calorie tracker project?</div><div class="ts">11:49 am</div></div><div class="av">Y</div></div>
+          <div class="msg bot"><div class="av">A</div><div class="wrap"><div class="bub">On it. Ravi is setting it up in <b>calorie_tracker</b>.</div><div class="ts">11:49 am</div></div></div>
+        </div>
+        <div class="strip">
+          <button class="ftrig"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>calorie_tracker<svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="ftrig"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>Big Pickle<svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="ftrig right"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0-4 10.5V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-3.5A6 6 0 0 0 12 3z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>Auto<svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+        <div class="composer">
+          <button class="clip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+          <div class="input">Ask Asha anything…</div>
+          <button class="send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        </div>
+      </aside>
+    </div>
+  </section>
+</div>
+
+<div class="screen-label">Work — three named workers, each with its own project · model · thinking</div>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="mark">A</div><div><div class="who">Asha</div><div class="sub">voice assistant</div></div></div>
+    <button class="newchat">＋ New chat</button>
+    <div>
+      <div class="side-sec-title">Library</div>
+      <nav class="side-nav">
+        <div class="side-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Skills</div>
+        <div class="side-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10c0-1.1-.9-2-2-2h-2.5a2.5 2.5 0 0 1 0-5H18a2 2 0 0 0 2-2 9 9 0 0 0-8-1z"/></svg>Memory</div>
+        <div class="side-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.7-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9 4.6 1.6 1.6 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1A1.6 1.6 0 0 0 15 4.6a1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.6 1.6 0 0 0 19.4 9v.1A1.6 1.6 0 0 0 21 10a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>Settings</div>
+      </nav>
+    </div>
+    <div class="side-foot"><div class="you">Y</div><div class="st">You<span>connected</span></div></div>
+  </aside>
+
+  <section class="main">
+    <div class="topbar"><div class="seg"><button>Chat</button><button class="on">Work</button></div></div>
+    <div class="body" style="grid-template-columns:1fr 350px">
+      <div class="work">
+        <div class="workbar"><span class="lbl">Project</span><span class="val">calorie_tracker</span><span class="change">Change</span></div>
+        <div class="cards">
+          <!-- Kiran -->
+          <div class="card">
+            <div class="card-h"><div class="wavatar k">K</div><div><div class="nm">Kiran</div><div class="role">builds features</div></div><span class="pill">idle</span></div>
+            <div class="cfg">
+              <span class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>calorie_tracker</span>
+              <span class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>Big Pickle</span>
+              <span class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0-4 10.5V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-3.5A6 6 0 0 0 12 3z"/></svg>Auto</span>
+            </div>
+            <div class="feed"><div class="ghost"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>Waiting for activity…</div>
+          </div>
+          <!-- Ravi -->
+          <div class="card">
+            <div class="card-h"><div class="wavatar r">R</div><div><div class="nm">Ravi</div><div class="role">quick fixes</div></div><span class="pill" style="background:var(--ambersoft);color:var(--amber)">working</span></div>
+            <div class="cfg">
+              <span class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>calorie_tracker</span>
+              <span class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>MiMo V2.5 Free</span>
+              <span class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0-4 10.5V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-3.5A6 6 0 0 0 12 3z"/></svg>Auto</span>
+            </div>
+            <div class="feed" style="align-items:flex-start;justify-content:flex-start;gap:8px">
+              <div style="display:flex;gap:8px;align-items:center;color:var(--t2)"><span class="dot" style="background:var(--amber)"></span>read · app/models.py</div>
+              <div style="display:flex;gap:8px;align-items:center;color:var(--t2)"><span class="dot" style="background:var(--accent)"></span>edit · add calorie field</div>
+              <div style="display:flex;gap:8px;align-items:center;color:var(--t2)"><span class="dot" style="background:var(--green)"></span>bash · pytest — 12 passed</div>
+            </div>
+          </div>
+          <!-- Tara -->
+          <div class="card">
+            <div class="card-h"><div class="wavatar t">T</div><div><div class="nm">Tara</div><div class="role">review &amp; verify</div></div><span class="pill">idle</span></div>
+            <div class="cfg">
+              <span class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>calorie_tracker</span>
+              <span class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>Muse Spark 1.3</span>
+              <span class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0-4 10.5V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-3.5A6 6 0 0 0 12 3z"/></svg>High</span>
+            </div>
+            <div class="feed"><div class="ghost"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></div>Waiting for activity…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- conversation rail: always present, so you can talk/chat while working -->
+      <aside class="chatpanel">
+        <div class="chat-scroll">
+          <div class="msg bot"><div class="av">A</div><div class="wrap"><div class="bub">On it — <b>Ravi</b> is setting up <b>calorie_tracker</b>.</div><div class="ts">11:49 am</div></div></div>
+          <div class="msg user"><div class="wrap"><div class="bub">Tara, review it when he's done.</div><div class="ts">11:50 am</div></div><div class="av">Y</div></div>
+          <div class="msg bot"><div class="av">A</div><div class="wrap"><div class="bub">Will do — Tara's queued to review.</div><div class="ts">11:50 am</div></div></div>
+        </div>
+        <div class="strip">
+          <button class="ftrig"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>calorie_tracker<svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="ftrig"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>Big Pickle<svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="ftrig right"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0-4 10.5V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-3.5A6 6 0 0 0 12 3z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>Auto<svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+        <div class="composer">
+          <button class="micmini" title="Talk to Asha"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>
+          <button class="clip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+          <div class="input">Ask Asha anything, or just talk…</div>
+          <button class="send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        </div>
+      </aside>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>

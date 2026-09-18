@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asha</title>
+<style>
+  :root{--bg:#0a0c10;--panel:#0f131a;--line:#1d2632;--ink:#cfe3ff;--dim:#7d93ad;--accent:#0a84ff;--ok:#7ee787;--err:#ff6b6b;}
+  *{box-sizing:border-box}
+  body{margin:0;height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);
+       font:14px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  header{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .brand{font-weight:700;letter-spacing:.5px}
+  .brand b{color:var(--accent)}
+  #model{background:#111721;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px;max-width:52vw}
+  .spacer{flex:1}
+  .stat{font-size:12px;color:var(--dim)}
+  button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;font:inherit}
+  button.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+  button:disabled{opacity:.5;cursor:default}
+  #log{flex:1;overflow:auto;padding:18px 20px}
+  .msg{margin:0 0 14px;white-space:pre-wrap;word-break:break-word}
+  .msg.user{color:#fff}
+  .msg.user::before{content:"> ";color:var(--accent)}
+  .msg.step{color:var(--dim)}
+  .msg.tok{color:#a9d4ff}
+  .msg.done{color:var(--ink);border-left:2px solid var(--ok);padding-left:10px}
+  .msg.err{color:var(--err)}
+  footer{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line);background:var(--panel)}
+  #t{flex:1;background:#111721;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit}
+  /* settings */
+  #scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none}
+  #panel{position:fixed;top:0;right:0;height:100vh;width:min(520px,92vw);background:var(--panel);
+         border-left:1px solid var(--line);transform:translateX(100%);transition:transform .18s ease;overflow:auto;padding:18px}
+  #panel.open{transform:none}#scrim.open{display:block}
+  h3{margin:18px 0 8px;font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+  .row{display:flex;gap:8px;align-items:center;margin:6px 0}
+  .row label{width:110px;font-size:12px;color:var(--dim)}
+  .row input{flex:1;background:#111721;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit}
+  .set{font-size:11px;color:var(--ok)}.noset{font-size:11px;color:var(--dim)}
+  .card{border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0}
+  .muted{color:var(--dim);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">ASHA<b>·</b>core</div>
+  <select id="model" title="Model"></select>
+  <span id="state" class="stat">connecting…</span>
+  <span class="spacer"></span>
+  <button class="ghost" id="settingsBtn">Settings</button>
+</header>
+<div id="log"></div>
+<footer>
+  <input id="t" placeholder="Ask Asha to build something…" autocomplete="off" autofocus>
+  <button id="stop" class="ghost" disabled>Stop</button>
+  <button id="send">Run</button>
+</footer>
+
+<div id="scrim"></div>
+<aside id="panel">
+  <div class="row"><b>Settings</b><span class="spacer"></span><button class="ghost" id="closePanel">Close</button></div>
+  <h3>API keys</h3><div class="muted">Stored locally in <code>prototype/.env</code> (never leaves your machine).</div>
+  <div id="keys"></div>
+  <h3>Custom providers</h3><div class="muted">Any OpenAI-compatible endpoint.</div>
+  <div id="customs"></div>
+  <div class="card">
+    <div class="row"><label>Name</label><input id="cpName" placeholder="OmniRoute"></div>
+    <div class="row"><label>Base URL</label><input id="cpBase" placeholder="https://…/v1"></div>
+    <div class="row"><label>API key</label><input id="cpKey" type="password"></div>
+    <div class="row"><label>Models</label><input id="cpModels" placeholder="comma-separated"></div>
+    <div class="row"><span class="spacer"></span><button id="cpAdd">Add provider</button></div>
+    <div id="cpStat" class="muted"></div>
+  </div>
+</aside>
+<script src="/static/core.js"></script>
+</body>
+</html>

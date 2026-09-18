@@ -1,0 +1,150 @@
+name: release
+
+# Build the Asha installers for macOS + Windows and publish a GitHub Release.
+# Run manually (Actions → release → Run workflow) or push a tag like v0.1.0.
+# The Release gets Asha-<ver>.dmg (Mac) and Asha-Setup-<ver>.exe (Windows).
+#
+# KEYLESS BY CONSTRUCTION: this workflow never reads a credential secret and
+# never writes one into the build tree. Both jobs build only from the shipped,
+# secret-free prototype/packaging/shipped.env.template, then run a fail-closed
+# verification step over the produced artifact/packaging input. The only secret
+# used anywhere is the auto-provided GITHUB_TOKEN, which is scoped to the
+# release-publishing step and never enters an artifact.
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  macos:
+    # macOS 15 (arm64): moonshine-voice ships a macosx_15_0_arm64 wheel, so the
+    # runner must be >= macOS 15.
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build .app + .dmg (keyless)
+        run: bash prototype/packaging/build_macos.sh arm64
+      - name: Verify keyless DMG (no credentials)
+        shell: bash
+        run: |
+          set -euo pipefail
+          DMG="$(ls prototype/packaging/dist/*.dmg 2>/dev/null | head -n1 || true)"
+          if [ -z "$DMG" ]; then echo "::error::no .dmg produced"; exit 1; fi
+          MP="$(mktemp -d)"
+          hdiutil attach "$DMG" -nobrowse -readonly -mountpoint "$MP" >/dev/null
+          cleanup() { hdiutil detach "$MP" >/dev/null 2>&1 || true; rmdir "$MP" 2>/dev/null || true; }
+          trap cleanup EXIT
+          APP="$(find "$MP" -maxdepth 2 -name 'Asha.app' -type d | head -n1 || true)"
+          if [ -z "$APP" ] && [ -d "$MP/Contents" ]; then APP="$MP"; fi
+          if [ -z "$APP" ]; then echo "::error::Asha.app not found inside $DMG"; exit 1; fi
+          RES="$APP/Contents/Resources"
+          fail=0
+          SECRET_RE='sk-[A-Za-z0-9_-]{16,}|sk-or-v1-[A-Za-z0-9_-]{16,}|AIza[A-Za-z0-9_-]{30,}|GOCSPX-[A-Za-z0-9_-]{16,}|figd_[A-Za-z0-9_-]{20,}|gsk_[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9_-]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY-----'
+          hits="$(grep -rIlE "$SECRET_RE" "$RES/app" --exclude='test_*.py' 2>/dev/null || true)"
+          if [ -n "$hits" ]; then
+            echo "::error::key-shaped string found in shipped bundle:"
+            echo "$hits"
+            fail=1
+          fi
+          ENVF="$RES/app/.env"
+          if [ ! -f "$ENVF" ]; then echo "::error::shipped config template missing in bundle"; fail=1; fi
+          if [ -f "$ENVF" ] && grep -qE '^[[:space:]]*(DEEPSEEK_API_KEY|OPENCODE_API_KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY|JARVIS_TOKEN|JARVIS_ENV_B64)[[:space:]]*=[[:space:]]*[^[:space:]#]' "$ENVF"; then
+            echo "::error::non-empty secret assignment in bundled .env:"
+            grep -nE '^[[:space:]]*(DEEPSEEK_API_KEY|OPENCODE_API_KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY|JARVIS_TOKEN|JARVIS_ENV_B64)' "$ENVF" | sed 's/=.*/=<redacted>/'
+            fail=1
+          fi
+          stray="$(find "$RES/app" -name '.env' ! -path "$RES/app/.env" 2>/dev/null || true)"
+          if [ -n "$stray" ]; then
+            echo "::error::unexpected .env in shipped bundle:"
+            echo "$stray"
+            fail=1
+          fi
+          [ "$fail" -eq 0 ] || exit 1
+          echo "keyless verification: no credentials in the DMG"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Asha-macos
+          path: prototype/packaging/dist/*.dmg
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress || true
+      - name: Build bundle + installer (keyless)
+        shell: powershell
+        run: powershell -ExecutionPolicy Bypass -File prototype/packaging/build_windows.ps1
+      - name: Verify keyless packaging input (no credentials)
+        shell: pwsh
+        run: |
+          $root = "prototype/packaging/dist/win/Asha"
+          if (-not (Test-Path $root)) { Write-Host "::error::packaging input tree missing at $root"; exit 1 }
+          $fail = @()
+
+          # 1) every .env in the Inno Setup input tree must be the shipped template at app\.env
+          $expected = Join-Path $root "app\.env"
+          Get-ChildItem -Recurse -File -Force -Filter ".env" $root | ForEach-Object {
+            $rel = Resolve-Path -Relative $_.FullName
+            if ($rel -notmatch 'app[\\/]\.env$') { $fail += "unexpected .env in packaging input tree: $rel" }
+          }
+          if (-not (Test-Path $expected)) { $fail += "shipped config template missing at $expected" }
+
+          # 2) no key-shaped strings in first-party app code (skip test fixtures)
+          $SecretRe = 'sk-[A-Za-z0-9_-]{16,}|sk-or-v1-[A-Za-z0-9_-]{16,}|AIza[A-Za-z0-9_-]{30,}|GOCSPX-[A-Za-z0-9_-]{16,}|figd_[A-Za-z0-9_-]{20,}|gsk_[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9_-]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY-----'
+          $app = Join-Path $root "app"
+          if (Test-Path $app) {
+            Get-ChildItem -Recurse -File $app | Where-Object { $_.Name -notlike 'test_*.py' } | ForEach-Object {
+              if (Select-String -Path $_.FullName -Pattern $SecretRe -Quiet -ErrorAction SilentlyContinue) {
+                $fail += "key-shaped string in $($_.FullName)"
+              }
+            }
+          }
+
+          # 3) no non-empty provider key / secret assignment in the shipped template
+          if (Test-Path $expected) {
+            if (Select-String -Path $expected -Pattern '^\s*(DEEPSEEK_API_KEY|OPENCODE_API_KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY|JARVIS_TOKEN|JARVIS_ENV_B64)\s*=\s*\S+' -Quiet) {
+              $fail += "non-empty secret assignment in $expected"
+            }
+          }
+
+          if ($fail.Count -gt 0) {
+            Write-Host "::error::keyless verification FAILED"
+            $fail | ForEach-Object { Write-Host $_ }
+            exit 1
+          }
+          Write-Host "keyless verification: no credentials in the Windows packaging input tree"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Asha-windows
+          path: prototype/packaging/dist/*.exe
+
+  release:
+    needs: [macos, windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Read version
+        id: v
+        run: echo "version=$(tr -d '[:space:]' < prototype/packaging/VERSION)" >> "$GITHUB_OUTPUT"
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.v.outputs.version }}
+          name: Asha v${{ steps.v.outputs.version }}
+          generate_release_notes: true
+          make_latest: true
+          files: |
+            artifacts/**/*.dmg
+            artifacts/**/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

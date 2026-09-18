@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Asha</title>
+  <link rel="icon" type="image/png" href="jarvis-icon.png" />
+  <link rel="apple-touch-icon" href="jarvis-icon.png" />
+  <link rel="stylesheet" href="styles.css?v=20260918-1" />
+</head>
+<body>
+<button class="theme-btn" id="themeToggle" title="Switch light / dark theme" aria-label="Switch theme">
+  <svg id="themeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+</button>
+
+<div class="app-shell">
+
+  <!-- Sidebar: branding + library + recent + profile -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo" id="sbLogo"><img src="jarvis-logo.png" alt="Asha"></div>
+      <div class="sb-brand-text">
+        <div class="sb-title" id="sbTitle">Asha</div>
+        <div class="sb-subtitle">voice assistant</div>
+      </div>
+    </div>
+
+    <button class="sb-newchat" id="sbNewChat">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>New chat</span>
+    </button>
+
+    <div class="sb-scroll">
+
+      <div class="sb-section sb-section--lib">
+        <div class="sb-heading">Library</div>
+        <div class="sb-lib-item" id="sbProjectsLink">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span>Projects</span>
+        </div>
+        <div class="sb-lib-item sb-lib-coming-soon" title="Coming soon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>Skills</span>
+        </div>
+        <div class="sb-lib-item" id="sbMemoryLink">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+          <span>Memory</span>
+        </div>
+        <div class="sb-lib-item" id="sbMcpLink">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6M6 8h12v5a6 6 0 0 1-12 0z"/><path d="M12 19v3"/></svg>
+          <span>MCP</span>
+        </div>
+        <div class="sb-lib-item" id="sbSettingsLink">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </div>
+      </div>
+
+      <div class="sb-section sb-section--agents" id="sbAgents">
+        <button class="sb-agents-toggle" id="sbAgentsToggle" type="button"
+                aria-expanded="true" aria-controls="sbAgentsList" title="Show or hide agent status">
+          <svg class="sb-agents-caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <span class="sb-heading-text">Agents</span>
+          <span class="sb-agents-count" id="sbAgentsCount">0</span>
+        </button>
+        <div id="sbAgentsList"></div>
+      </div>
+
+      <div class="sb-section sb-section--recent">
+        <div class="sb-heading">Recent</div>
+        <div id="sbRecentList"><div class="sb-recent-empty">No sessions yet.</div></div>
+      </div>
+
+    </div><!-- /sb-scroll -->
+
+    <div class="sb-profile">
+      <div class="sb-profile-avatar">Y</div>
+      <div class="sb-profile-info">
+        <div class="sb-profile-name">You</div>
+        <div class="sb-profile-status">
+          <span class="dot" id="dot"></span>
+          <span id="status">connecting</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main area: orb-panel + chat-panel -->
+  <div class="main-area">
+
+    <div class="main-columns">
+
+      <div class="mid-col" id="midCol">
+        <!-- Work mode: 3 worker panels -->
+        <section class="work-area" id="workArea" hidden>
+          <div class="work-status-bar">
+            <span class="work-brain-label">Brain</span>
+            <span class="work-brain-status" id="workBrainStatus">— idle</span>
+          </div>
+          <div class="work-project-row" id="workProjectRow" title="Change project folder">
+            <span class="work-project-label">Project</span>
+            <span class="work-project-name" id="workProjectName" title="">…</span>
+            <span class="work-project-change">Change</span>
+          </div>
+          <div id="workerGrid" class="worker-grid"></div>
+        </section>
+
+        <!-- Orb panel: greeting + orb + voice-control row + status + example prompts -->
+        <section class="orb-panel">
+          <div id="orbGreeting" class="orb-greeting"></div>
+
+          <div class="orb-center">
+            <div class="orb-stage" id="orbStage">
+              <div class="orb-hud"></div>
+              <div id="orb">
+                <!-- Energy wave ripples -->
+                <div class="orb-ring orb-ring--1"></div>
+                <div class="orb-ring orb-ring--2"></div>
+                <div class="orb-ring orb-ring--3"></div>
+              </div>
+            </div>
+            <div class="voice-row">
+              <button class="iconbtn" id="micBtn" title="Enable microphone">
+                <svg class="mic-on-ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+                <svg class="mic-off-ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9v3a3 3 0 0 0 5.1 2.1M15 9.3V5a3 3 0 0 0-5.9-.7"/><path d="M5 10a7 7 0 0 0 11 6"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="3" y1="3" x2="21" y2="21"/></svg>
+              </button>
+              <div id="micMeter">
+                <div class="micMeter-row">
+                  <div class="micMeter-bar">
+                    <div class="micMeter-fill" id="micMeterFill"></div>
+                    <div class="micMeter-tick" id="micMeterTick" style="left:70%"></div>
+                  </div>
+                  <div class="micMeter-num" id="micMeterNum">0</div>
+                </div>
+                <div class="micMeter-warn" id="micMeterWarn">high ambient &mdash; check mic/noise</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="orbName" class="orb-name">Asha</div>
+          <div id="orbStatus" class="orb-status-line">idle</div>
+
+          <div class="orb-chips" id="orbChips">
+            <button class="orb-chip" data-text="How are you doing?"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg><span>How are you doing?</span></button>
+            <button class="orb-chip" data-text="What's the weather in Mumbai?"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg><span>What's the weather in Mumbai?</span></button>
+            <button class="orb-chip" data-text="Tell me a story"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Tell me a story</span></button>
+            <button class="orb-chip" data-text="What can you help with?"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>What can you help with?</span></button>
+          </div>
+        </section>
+      </div><!-- /mid-col -->
+
+      <!-- Chat panel: scrollable history + input bar -->
+      <section class="chat-panel">
+        <div id="chat"><div class="inner" id="inner"></div></div>
+        <div id="attachBar" class="attach-bar" hidden></div>
+        <div class="brain-strip" id="brainStrip">
+          <button id="projectBtn" class="bs-trigger bs-trigger--project" type="button" title="Project folder Asha works in">
+            <span class="bs-trigger-icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <span class="bs-trigger-name" id="projectBtnName">Select project</span>
+            <svg class="bs-caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <span id="brainModelBtn" class="bs-trigger bs-trigger--fixed" title="AI model that powers Asha (fixed: DeepSeek V4.1 Flash)">
+            <span class="bs-trigger-icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>
+            </span>
+            <span class="bs-trigger-name" id="brainModelBtnName">DeepSeek V4.1 Flash</span>
+          </span>
+        </div>
+        <footer>
+          <button class="iconbtn" id="stopBtn" title="Stop coding">&times;</button>
+          <button class="iconbtn micmini" id="composerMic" title="Talk to Asha">
+            <svg class="mic-on-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+            <svg class="mic-off-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9v3a3 3 0 0 0 5.1 2.1M15 9.3V5a3 3 0 0 0-5.9-.7"/><path d="M5 10a7 7 0 0 0 11 6"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="3" y1="3" x2="21" y2="21"/></svg>
+          </button>
+          <div class="btn-attach" id="attachBtn" title="Attach images">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            <input type="file" id="attachInput" accept="image/*" multiple class="file-input-hidden" />
+          </div>
+          <div id="inputPill">
+            <textarea id="textInput" rows="1" placeholder="Ask Asha anything&hellip;" autocomplete="off" spellcheck="false"></textarea>
+            <button class="iconbtn expandmini" id="expandBtn" title="Review full message" type="button" hidden>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+            </button>
+            <button class="iconbtn" id="sendBtn" title="Send">
+              <svg class="send-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <svg class="stop-ico" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg>
+            </button>
+          </div>
+        </footer>
+      </section>
+
+    </div><!-- /main-columns -->
+  </div><!-- /main-area -->
+</div><!-- /app-shell -->
+
+<!-- Overlays (fixed, hidden by default) -->
+
+<div class="proposal" id="proposal">
+  <div class="proposal-label">Asha proposes a change</div>
+  <div class="proposal-text" id="proposalText"></div>
+  <div class="proposal-btns">
+    <button id="proposalApprove">Approve</button>
+    <button id="proposalReject">Reject</button>
+  </div>
+</div>
+
+<div class="permission" id="permission">
+  <div class="permission-label" id="permLabel">Agent wants access</div>
+  <div class="permission-detail" id="permDetail"></div>
+  <div class="permission-btns">
+    <button id="permAllow">Allow</button>
+    <button id="permDeny">Deny</button>
+  </div>
+</div>
+
+<div id="memoryPanel">
+  <div class="memory-card">
+    <div class="memory-header">
+      <span class="memory-title">What Asha remembers</span>
+      <button class="memory-close" id="memoryClose">&times;</button>
+    </div>
+    <div class="memory-list" id="memoryList">
+      <div class="memory-empty">No memories yet.</div>
+    </div>
+  </div>
+</div>
+
+<div id="mcpScreen" class="mcp-screen" hidden>
+  <div class="mcp-modal">
+    <div class="settings-header">
+      <span class="settings-title">Directory</span>
+      <button class="settings-close" id="mcpClose" type="button">&times;</button>
+    </div>
+    <div class="mcp-search-row">
+      <input id="mcpSearch" placeholder="Search connectors" autocomplete="off">
+      <button class="settings-key-save" id="mcpSearchBtn" type="button">Search</button>
+    </div>
+    <div class="mcp-grid" id="mcpGrid"></div>
+    <details class="mcp-advanced">
+      <summary>Add a custom server</summary>
+      <div class="mcp-add">
+        <div class="row"><label>Name</label><input id="mcpName" placeholder="github" autocomplete="off"></div>
+        <div class="row"><label>Command</label><input id="mcpCommand" placeholder="npx -y @modelcontextprotocol/server-github" autocomplete="off"></div>
+        <div class="row"><label>or URL</label><input id="mcpUrl" placeholder="https://…  (remote MCP)" autocomplete="off"></div>
+        <div class="row"><label>Token</label><input id="mcpToken" type="password" placeholder="optional (Authorization: Bearer …)" autocomplete="off"></div>
+        <div class="row"><label>Env</label><textarea id="mcpEnv" rows="2" placeholder="KEY=value, one per line"></textarea></div>
+        <div class="row"><span class="spacer"></span><button class="settings-key-save" id="mcpAddBtn" type="button">Add server</button></div>
+        <div class="settings-key-detail" id="mcpStatus" hidden></div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div id="connectorScreen" class="mcp-screen" hidden>
+  <div class="mcp-modal connector-modal">
+    <div class="settings-header">
+      <span class="settings-title"><span class="connector-icon" id="connectorIcon">🔌</span><span id="connectorTitle">Set up connector</span></span>
+      <button class="settings-close" id="connectorClose" type="button">&times;</button>
+    </div>
+    <div class="connector-summary" id="connectorSummary"></div>
+    <div class="connector-why" id="connectorWhy"></div>
+    <ol class="connector-steps" id="connectorSteps"></ol>
+    <div class="connector-field">
+      <label id="connectorFieldLabel" for="connectorInput">Access token</label>
+      <input id="connectorInput" type="password" autocomplete="off" spellcheck="false">
+      <div class="connector-hint" id="connectorHint"></div>
+    </div>
+    <div class="connector-actions">
+      <button class="settings-key-save" id="connectorTest" type="button">Test connection</button>
+      <button class="mcp-dir-action" id="connectorSaveAnyway" type="button" hidden>Save anyway (unverified)</button>
+      <button class="mcp-dir-action mcp-dir-danger" id="connectorRemove" type="button" hidden>Remove saved key</button>
+      <a class="connector-docs" id="connectorDocs" target="_blank" rel="noopener" hidden>Documentation</a>
+    </div>
+    <div class="settings-key-detail" id="connectorStatus" hidden></div>
+  </div>
+</div>
+
+<div id="projectsScreen" class="mcp-screen" hidden>
+  <div class="mcp-modal projects-modal">
+    <div class="settings-header">
+      <span class="settings-title">Projects</span>
+      <div class="projects-head-actions">
+        <div class="seg" id="boardViewToggle">
+          <button class="seg-btn" data-view="board" type="button">Board</button>
+          <button class="seg-btn" data-view="table" type="button">Table</button>
+        </div>
+        <button class="settings-close" id="projectsClose" type="button">&times;</button>
+      </div>
+    </div>
+    <div class="projects-body">
+      <aside class="projects-list">
+        <div id="projectsListItems"></div>
+        <button class="projects-new" id="projectAddBtn" type="button">+ New project</button>
+        <div class="projects-newform" id="projectNewForm" hidden>
+          <input id="newProjectName" placeholder="Project name" autocomplete="off">
+          <input id="newProjectRepo" placeholder="Repo folder (optional)" autocomplete="off">
+          <div class="projects-newform-actions">
+            <button class="settings-key-save" id="newProjectSave" type="button">Create</button>
+            <button class="projects-btn" id="newProjectCancel" type="button">Cancel</button>
+          </div>
+        </div>
+      </aside>
+      <section class="projects-main">
+        <div class="projects-toolbar">
+          <input id="boardFilterText" class="projects-filter" placeholder="Filter cards" autocomplete="off">
+          <div class="projects-chips" id="boardOwnerChips"></div>
+          <div class="projects-chips" id="boardPriorityChips"></div>
+          <label class="projects-scope"><input type="checkbox" id="boardAllProjects"> All projects</label>
+        </div>
+        <div class="projects-board" id="boardColumns"></div>
+        <div class="projects-table-wrap" id="boardTableWrap" hidden>
+          <table class="projects-table" id="boardTable"></table>
+        </div>
+        <div class="projects-empty" id="boardEmpty" hidden></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div id="cardEditor" class="projects-editor" hidden>
+  <div class="projects-editor-card">
+    <div class="settings-header">
+      <span class="settings-title" id="cardEditorTitle">Card</span>
+      <button class="settings-close" id="cardEditorClose" type="button">&times;</button>
+    </div>
+    <div class="projects-editor-body">
+      <div class="row"><label>Title</label><input id="ceTitle" autocomplete="off"></div>
+      <div class="row"><label>Area</label><input id="ceArea" autocomplete="off"></div>
+      <div class="row"><label>Owner</label><input id="ceOwner" autocomplete="off"></div>
+      <div class="row"><label>Priority</label><select id="cePriority"></select></div>
+      <div class="row"><label>Column</label><select id="ceStatus"></select></div>
+      <div class="row"><label>Needs</label><input id="ceNeeds" autocomplete="off"></div>
+      <div class="row"><label>Notes</label><textarea id="ceNotes" rows="2"></textarea></div>
+      <div class="row projects-editor-actions">
+        <button class="settings-key-save" id="ceSave" type="button">Save</button>
+        <button class="projects-btn" id="ceCancel" type="button">Cancel</button>
+        <button class="projects-btn projects-btn-danger" id="ceDelete" type="button">Delete</button>
+      </div>
+      <div class="settings-key-detail" id="ceStatusMsg" hidden></div>
+    </div>
+  </div>
+</div>
+
+<div id="settingsPanel">
+  <div class="settings-card">
+    <div class="settings-header">
+      <span class="settings-title">Settings</span>
+      <button class="settings-close" id="settingsClose">&times;</button>
+    </div>
+    <div class="settings-body">
+
+      <div class="settings-section">
+        <div class="settings-label">Appearance</div>
+        <div class="settings-row">
+          <div class="settings-row-text">
+            <div class="settings-row-title">Theme</div>
+            <div class="settings-row-sub">Light or dark.</div>
+          </div>
+          <div class="seg" id="setThemeSeg">
+            <button class="seg-btn" data-theme="light" type="button">Light</button>
+            <button class="seg-btn" data-theme="dark" type="button">Dark</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">Assistant</div>
+        <div class="settings-row">
+          <div class="settings-row-text">
+            <div class="settings-row-title">Model</div>
+            <div class="settings-row-sub" id="setModelSub">DeepSeek V4.1 Flash (fixed)</div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-text">
+            <div class="settings-row-title">Project</div>
+            <div class="settings-row-sub" id="setProjectSub">&hellip;</div>
+          </div>
+          <button class="settings-action" id="setProjectBtn" type="button">Change</button>
+        </div>
+      </div>
+
+      <div class="settings-section settings-section--keys">
+        <div class="settings-label">API keys</div>
+        <div class="settings-hint">Asha uses these providers. Keys are stored only in <code>prototype/.env</code> (gitignored, never leaves your machine).</div>
+        <div id="cfgKeys"></div>
+      </div>
+
+      <div class="settings-section settings-section--keys">
+        <div class="settings-label">Custom providers</div>
+        <div class="settings-hint">Any OpenAI-compatible endpoint — OpenRouter, OmniRoute, a local server, or your own gateway. Stored locally in <code>data/providers.json</code>; keys never leave your machine.</div>
+        <div id="cfgCustom"></div>
+        <div class="settings-custom-form">
+          <input id="cpName" class="settings-key-input" placeholder="Name (e.g. OmniRoute)" autocomplete="off">
+          <input id="cpBase" class="settings-key-input" placeholder="Base URL (https://…/v1)" autocomplete="off">
+          <input id="cpKey" class="settings-key-input" type="password" placeholder="API key" autocomplete="off">
+          <input id="cpModels" class="settings-key-input" placeholder="Models (comma-separated, optional)" autocomplete="off">
+          <button id="cpAdd" class="settings-key-save" type="button">Add provider</button>
+          <div id="cpStatus" class="settings-key-detail" hidden></div>
+        </div>
+      </div>
+      <div class="settings-error" id="settingsError" hidden></div>
+
+      <div class="settings-section settings-section--about">
+        <div class="settings-about">
+          <span class="settings-about-mark">A</span>
+          <div class="settings-about-text">
+            <div class="settings-about-name">Asha</div>
+            <div class="settings-about-sub">Voice-first coding assistant</div>
+          </div>
+          <span class="settings-about-ver" id="setVersion">v1.0</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- First-run setup: full-screen white key screen -->
+<div id="setupScreen" class="setup-screen" hidden>
+  <button id="setupClose" class="setup-close" type="button" aria-label="Close" hidden>&times;</button>
+  <div class="setup-inner">
+    <div class="setup-brand">
+      <span class="setup-mark"></span>
+      <span class="setup-word">asha</span>
+    </div>
+
+    <h1 class="setup-title" id="setupTitle">Welcome to Asha</h1>
+    <p class="setup-sub" id="setupSub">Paste your OpenCode key to get started. It stays on this computer.</p>
+
+    <div class="setup-field">
+      <span class="setup-field-icon" aria-hidden="true">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      </span>
+      <input id="setupKeyInput" type="password" placeholder="Paste your key here" autocomplete="off" spellcheck="false" />
+      <button id="setupEye" class="setup-eye" type="button" aria-label="Show key" title="Show key"></button>
+    </div>
+
+    <div class="setup-helper">
+      <button id="setupHelperBtn" class="setup-helper-btn" type="button">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        <span>Where do I find my key?</span>
+      </button>
+      <div class="setup-helper-body" id="setupHelperBody" hidden>
+        <ol>
+          <li>Go to <a href="https://opencode.ai" target="_blank" rel="noopener">opencode.ai</a> and sign in.</li>
+          <li>Open your account settings &rarr; API keys.</li>
+          <li>Create a key, copy it, and paste it above.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="setup-error" id="setupError" hidden></div>
+    <button id="setupContinue" class="setup-continue" type="button" disabled>Continue</button>
+
+    <div class="setup-trust">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>Stored only on this Mac. It never leaves your machine.</span>
+    </div>
+  </div>
+</div>
+
+<!-- Guided onboarding: dims everything except the control it points to -->
+<div id="spotOnboard" class="spot-overlay" hidden>
+  <div id="spotHole" class="spot-hole"></div>
+  <div id="spotNotice" class="spot-notice">
+    <div class="spot-text" id="spotText"></div>
+    <button id="spotOk" class="spot-ok" hidden>OK</button>
+  </div>
+</div>
+
+<!-- Brain model picker: grouped (Zen / Go), searchable, opens upward -->
+<div id="modelPicker" class="model-picker" hidden>
+  <div class="mp-search">
+    <svg class="mp-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="modelPickerSearch" type="text" placeholder="Search models" autocomplete="off" spellcheck="false" />
+  </div>
+  <div class="mp-list" id="modelPickerList"></div>
+  <button id="modelPickerManage" class="mp-manage" type="button">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+    <span>Manage models</span>
+  </button>
+</div>
+
+<!-- Project picker: shared by the Chat strip and the Work row -->
+<div id="projectPicker" class="project-picker" hidden>
+  <div class="pp-view" id="ppListView">
+    <div class="pp-search">
+      <svg class="pp-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="projectSearch" type="text" placeholder="Search projects" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="pp-list" id="projectList"></div>
+    <button class="pp-add" id="projectAddBtn" type="button">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>Add project</span>
+    </button>
+  </div>
+
+  <div class="pp-view" id="ppBrowseView" hidden>
+    <div class="pp-browse-head">
+      <button class="project-nav" id="projectBackBtn" title="Back to projects" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <button class="project-nav" id="projectUpBtn" title="Up one folder" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+      </button>
+      <span class="project-crumb" id="projectCrumb" title="">~</span>
+      <button class="project-native" id="projectNativeBtn" type="button" title="Choose with the macOS folder dialog">Choose&hellip;</button>
+    </div>
+    <div class="project-dirlist" id="projectDirList"></div>
+    <button class="project-use" id="projectUseBtn" type="button">Use this folder</button>
+    <div class="project-path-row">
+      <input class="project-path-input" id="projectPathInput" type="text" placeholder="or paste a full path&hellip;" spellcheck="false">
+      <button class="iconbtn project-open-btn" id="projectOpenBtn" title="Open typed path" type="button">Open</button>
+    </div>
+  </div>
+</div>
+
+<!-- Manage models: choose which models appear in the selector -->
+<div id="manageModels" class="mm-overlay" hidden>
+  <div class="mm-card">
+    <div class="mm-head">
+      <div class="mm-head-text">
+        <div class="mm-title">Manage models</div>
+        <div class="mm-sub">Customize which models appear in the model selector.</div>
+      </div>
+      <button id="mmConnect" class="mm-connect" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Connect provider</span>
+      </button>
+      <button class="cp-close" id="mmClose" type="button" title="Close" aria-label="Close">&times;</button>
+    </div>
+    <div class="mm-search">
+      <input id="mmSearch" type="text" placeholder="Search models" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="mm-list" id="mmList"></div>
+  </div>
+</div>
+
+<!-- Connect provider: pick a provider, paste its API key -->
+<div id="connectProvider" class="mm-overlay" hidden>
+  <div class="mm-card">
+    <div class="cp-view" id="cpListView">
+      <div class="mm-head">
+        <button class="cp-back" id="cpListBack" type="button" title="Back" hidden>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div class="mm-head-text">
+          <div class="mm-title">Connect provider</div>
+          <div class="mm-sub">Add a provider's API key to use its models.</div>
+        </div>
+        <button class="cp-close" id="cpClose" type="button" title="Close" aria-label="Close">&times;</button>
+      </div>
+      <div class="mm-search">
+        <input id="cpSearch" type="text" placeholder="Search providers" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="mm-list" id="cpList"></div>
+    </div>
+    <div class="cp-view" id="cpKeyView" hidden>
+      <div class="cp-key-head">
+        <button class="cp-back" id="cpBack" type="button" title="Back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <span class="cp-key-mark" id="cpMark">O</span>
+        <span class="cp-key-name" id="cpKeyName">Provider</span>
+        <button class="cp-close" id="cpClose2" type="button" title="Close" aria-label="Close">&times;</button>
+      </div>
+      <div class="cp-key-body">
+        <div class="mm-title" id="cpTitle">Connect provider</div>
+        <div class="mm-sub" id="cpSub">Enter your API key to use this provider's models.</div>
+        <label class="cp-field">
+          <span class="cp-label" id="cpKeyLabel">API key</span>
+          <input id="cpKeyInput" type="password" placeholder="Paste your API key" autocomplete="off" spellcheck="false" />
+        </label>
+        <div class="cp-error" id="cpError" hidden></div>
+        <button class="cp-continue" id="cpContinue" type="button">Continue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="dropVeil" hidden>
+  <div class="drop-veil-card">Drop images to attach</div>
+</div>
+
+<!-- Composer review: verify long / pasted messages before sending -->
+<div id="reviewMessage" class="mm-overlay" hidden>
+  <div class="mm-card review-card">
+    <div class="mm-head">
+      <div class="mm-head-text">
+        <div class="mm-title">Review your message</div>
+        <div class="mm-sub" id="reviewMeta">Check that your paste came through, then send.</div>
+      </div>
+      <button class="cp-close" id="reviewClose" type="button" title="Close" aria-label="Close">&times;</button>
+    </div>
+    <div class="review-body">
+      <textarea id="reviewText" spellcheck="false" wrap="soft"></textarea>
+    </div>
+    <div class="review-actions">
+      <button class="review-btn ghost" id="reviewCancel" type="button">Cancel</button>
+      <button class="review-btn primary" id="reviewPush" type="button">Send</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=20260918-1"></script>
+</body>
+</html>

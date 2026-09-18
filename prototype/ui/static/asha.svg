@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#c7ceff"/>
+      <stop offset="100%" stop-color="#8f9ae8"/>
+    </radialGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f2c9a8"/>
+      <stop offset="100%" stop-color="#e8b28e"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#241b17"/>
+      <stop offset="100%" stop-color="#120d0b"/>
+    </linearGradient>
+    <linearGradient id="lips" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b06a5d"/>
+      <stop offset="100%" stop-color="#9c554b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="480" height="480" fill="url(#bg)"/>
+
+  <!-- shoulders / dress -->
+  <path d="M96 480 C110 380 170 336 240 336 C310 336 370 380 384 480 Z" fill="#3c4a7a"/>
+  <path d="M196 336 L240 388 L284 336 L266 320 L214 320 Z" fill="#2e3a63"/>
+
+  <!-- hair back -->
+  <path d="M138 300 C120 208 150 96 240 96 C330 96 360 208 342 300 C332 352 300 380 288 372 C282 330 286 300 282 268 C240 296 198 296 162 268 C158 308 164 340 152 368 C138 356 140 322 138 300 Z" fill="url(#hair)"/>
+
+  <!-- neck -->
+  <path d="M212 260 L268 260 L272 310 Q240 336 208 310 Z" fill="#dfa683"/>
+
+  <!-- face -->
+  <g id="face">
+    <path d="M240 96 C312 96 348 160 348 232 C348 320 300 356 240 356 C180 356 132 320 132 232 C132 160 168 96 240 96 Z" fill="url(#skin)"/>
+
+    <!-- brows -->
+    <path d="M186 164 Q210 150 236 162" stroke="#7a4a2e" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M244 162 Q270 150 294 164" stroke="#7a4a2e" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+    <!-- eyes -->
+    <g fill="#402e22">
+      <ellipse cx="210" cy="196" rx="17" ry="21"/>
+      <ellipse cx="270" cy="196" rx="17" ry="21"/>
+    </g>
+    <circle cx="210" cy="196" r="8" fill="#170f0a"/>
+    <circle cx="270" cy="196" r="8" fill="#170f0a"/>
+    <circle cx="207" cy="192" r="3" fill="#fff"/>
+    <circle cx="267" cy="192" r="3" fill="#fff"/>
+    <!-- lashes -->
+    <path d="M188 208 L176 216 M192 212 L184 224 M234 208 L242 218" stroke="#3a2a1f" stroke-width="5" stroke-linecap="round" fill="none" transform="translate(0 4)"/>
+    <path d="M246 208 L238 218 M292 212 L300 224 M296 208 L284 216" stroke="#3a2a1f" stroke-width="5" stroke-linecap="round" fill="none" transform="translate(0 4)"/>
+
+    <!-- nose -->
+    <path d="M240 210 Q232 244 236 250 Q240 254 246 250 Q250 244 246 238" stroke="#d19a76" stroke-width="6" fill="none" stroke-linecap="round"/>
+
+    <!-- cheeks -->
+    <circle cx="176" cy="250" r="14" fill="#e79a86" opacity="0.45"/>
+    <circle cx="304" cy="250" r="14" fill="#e79a86" opacity="0.45"/>
+
+    <!-- MOUTH (animated layer) -->
+    <g id="mouth">
+      <path id="mouthpath" d="M212 288 Q225 296 240 297 Q255 296 268 288 Q255 306 240 306 Q225 306 212 288 Z" fill="url(#lips)"/>
+      <path id="mouthline" d="M214 291 Q226 299 240 300 Q254 299 266 291" stroke="#7c3a33" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

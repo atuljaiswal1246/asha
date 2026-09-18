@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asha — the voice-first assistant that does the work on your Mac</title>
+  <meta name="description" content="Asha is a voice-first personal assistant for macOS. Talk to your Mac: Asha plans the task, delegates to a team of agents, and reports back spoken. On-device speech, bring your own keys.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0b0f17">
+  <meta property="og:title" content="Asha — the voice-first assistant that does the work on your Mac">
+  <meta property="og:description" content="Talk to your Mac. Asha plans the task, puts a team of agents to work, and tells you what it did. On-device speech. Bring your own keys.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" href="assets/jarvis-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top" aria-label="Asha home">
+        <span class="brand-mark" role="img" aria-label="Asha logo"></span>
+        <span class="brand-name">Asha</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <a href="#how">How it works</a>
+        <a href="#why">Why Asha</a>
+        <a href="#onramp">Bring your key</a>
+        <a href="#plans">Plans</a>
+        <a href="#download">Download</a>
+        <a href="#faq">FAQ</a>
+        <a class="btn btn-small btn-primary" href="https://github.com/atuljaiswal1246/asha/releases/latest">Download for macOS</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-inner">
+        <span class="hero-mark brand-mark" aria-hidden="true"></span>
+        <h1 id="hero-title">A voice-first assistant that actually does the work on your Mac.</h1>
+        <p class="hero-sub">
+          Asha is the voice layer for the coding agent you already pay for — keep your
+          OpenCode plan and key, talk instead of type, hear the diff back.
+        </p>
+        <p class="hero-sub">
+          Asha doesn't replace your terminal agent — it talks to it: you speak a coding task, Asha delegates to the agent running on your own key (including your OpenCode key), and reports the result back by voice.<br>
+          Speech is on-device (Moonshine STT + Kokoro TTS in-process — no cloud speech bill), and Asha carries whole-day context your terminal never sees: mail, calendar, screen, camera, memory.<br>
+          MIT-licensed and open source, same as OpenCode — one Mac app to install, no terminal required, no new subscription required if you BYOK.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="https://github.com/atuljaiswal1246/asha/releases/latest">Download for macOS</a>
+          <a class="btn btn-ghost btn-lg" href="https://github.com/atuljaiswal1246/asha">View on GitHub</a>
+        </div>
+        <p class="hero-note">Free while in preview · Bring your own model key · macOS, Apple Silicon</p>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-title">You talk. Asha runs the errand.</h2>
+        <ol class="steps">
+          <li class="step">
+            <span class="step-num" aria-hidden="true">1</span>
+            <h3>Speak or type</h3>
+            <p>Push to talk, or type instead. Asha transcribes on the spot and shows you what it heard — the speech-to-text runs on your Mac.</p>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">2</span>
+            <h3>Asha plans</h3>
+            <p>A supervisor breaks the request into steps and briefs a small team of specialist agents with exactly what each one should do.</p>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">3</span>
+            <h3>The team delivers</h3>
+            <p>Agents work in parallel, then report back in one place. Asha reviews the result and tells you what it did — out loud.</p>
+          </li>
+        </ol>
+        <p class="proof">
+          Measured, not promised: <strong>14/14 tasks</strong> on our internal benchmark,
+          using roughly <strong>3–4× fewer tokens</strong> than the same-model baseline.
+          Method and logs are in the repository.
+        </p>
+      </div>
+    </section>
+
+    <!-- Why Asha / differentiators -->
+    <section class="section section-alt" id="why" aria-labelledby="why-title">
+      <div class="wrap">
+        <p class="eyebrow">Why Asha</p>
+        <h2 id="why-title">Honest differences, not marketing ones.</h2>
+        <ol class="features">
+          <li class="feature">
+            <h3><span class="feature-num" aria-hidden="true">01</span> Voice-first</h3>
+            <p>Built around talking, not typing — push-to-talk with on-device transcription.</p>
+          </li>
+          <li class="feature">
+            <h3><span class="feature-num" aria-hidden="true">02</span> Speech stays on your Mac</h3>
+            <p>Transcription and speech synthesis run locally. The voice loop itself doesn't need the cloud.</p>
+          </li>
+          <li class="feature">
+            <h3><span class="feature-num" aria-hidden="true">03</span> Your keys stay yours</h3>
+            <p>Bring your own model key. It lives on your Mac, and calls go straight to the provider you chose — no Asha server in the middle.</p>
+          </li>
+          <li class="feature">
+            <h3><span class="feature-num" aria-hidden="true">04</span> An agent team, not a chatbot</h3>
+            <p>A supervisor delegates to specialists and reviews the work before anything ships.</p>
+          </li>
+          <li class="feature">
+            <h3><span class="feature-num" aria-hidden="true">05</span> Connected where it counts</h3>
+            <p>Gmail and Google Calendar flows run against your own Google project; Figma files are inspected over the official REST API with your own token.</p>
+          </li>
+          <li class="feature">
+            <h3><span class="feature-num" aria-hidden="true">06</span> It makes media too</h3>
+            <p>Images with your own Leonardo key (with a free fallback), plus an optional local video add-on you run yourself.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Onramp / zero switching cost -->
+    <section class="section section-alt" id="onramp" aria-labelledby="onramp-title">
+      <div class="wrap">
+        <p class="eyebrow">Zero switching cost</p>
+        <h2 id="onramp-title">Keep your existing plan. Add a voice.</h2>
+        <p class="section-lead">
+          Asha works with the agent you already pay for. Bring your own key —
+          an existing OpenCode (or OpenRouter) key works — and nothing you rely on
+          today has to change.
+        </p>
+        <ol class="steps">
+          <li class="step"><span class="step-num" aria-hidden="true">1</span>
+            <h3>Install the app</h3>
+            <p>Download Asha.app, drag it to Applications, open it. No terminal, no curl | sh, no dev paths.</p></li>
+          <li class="step"><span class="step-num" aria-hidden="true">2</span>
+            <h3>Paste the key you already have</h3>
+            <p>Settings &rarr; agent key. OpenCode or OpenRouter both work; the key is stored in a private file on your Mac &mdash; never logged, never echoed.</p></li>
+          <li class="step"><span class="step-num" aria-hidden="true">3</span>
+            <h3>Talk to your agent</h3>
+            <p>Pick your project, speak a task, watch the steps stream in, and hear a short spoken summary of the diff. Say &ldquo;undo&rdquo; to revert.</p></li>
+        </ol>
+        <p class="plans-note">
+          Nothing to give up: your existing install, plan, key, terminal habits and repo stay
+          as they are. No new subscription is required on BYOK. The $10 / $20 / $50 plans
+          are for managed inference if you would rather not bring a key; usage is fair use
+          with the exact allowances in the docs.
+        </p>
+      </div>
+    </section>
+
+    <!-- Plans -->
+    <section class="section" id="plans" aria-labelledby="plans-title">
+      <div class="wrap">
+        <p class="eyebrow">Plans</p>
+        <h2 id="plans-title">Three simple tiers.</h2>
+        <p class="section-lead">
+          Usage is fair use — the exact limits will be written in the docs, not invented here.
+          Every tier still supports bring-your-own-key.
+        </p>
+
+        <div class="plans-grid">
+          <article class="plan" aria-labelledby="plan-starter">
+            <h3 id="plan-starter">Starter</h3>
+            <p class="price"><span class="amount">$10</span><span class="per">/ month</span></p>
+            <p class="plan-tag">Everyday voice and core tools.</p>
+            <ul class="plan-list">
+              <li>Managed inference for voice and chat</li>
+              <li>Core tools: files and screen reading</li>
+              <li>On-device speech (STT and TTS)</li>
+              <li>Bring your own key, always allowed</li>
+            </ul>
+            <p class="plan-limit">Usage: fair use — details in the docs.</p>
+            <a class="btn btn-ghost btn-block" href="https://github.com/atuljaiswal1246/asha/releases/latest">Get started</a>
+          </article>
+
+          <article class="plan plan-featured" aria-labelledby="plan-pro">
+            <p class="plan-badge">Most popular</p>
+            <h3 id="plan-pro">Pro</h3>
+            <p class="price"><span class="amount">$20</span><span class="per">/ month</span></p>
+            <p class="plan-tag">The whole agent team.</p>
+            <ul class="plan-list">
+              <li>Everything in Starter</li>
+              <li>Gmail, Google Calendar and Figma connectors</li>
+              <li>The full supervisor + specialist agent team</li>
+              <li>Image generation</li>
+            </ul>
+            <p class="plan-limit">Usage: fair use — details in the docs.</p>
+            <a class="btn btn-primary btn-block" href="https://github.com/atuljaiswal1246/asha/releases/latest">Get started</a>
+          </article>
+
+          <article class="plan" aria-labelledby="plan-studio">
+            <h3 id="plan-studio">Studio</h3>
+            <p class="price"><span class="amount">$50</span><span class="per">/ month</span></p>
+            <p class="plan-tag">For heavy daily use.</p>
+            <ul class="plan-list">
+              <li>Everything in Pro</li>
+              <li>Highest fair-use allowance</li>
+              <li>Optional local video add-on</li>
+              <li>Early access to new tools</li>
+            </ul>
+            <p class="plan-limit">Usage: fair use — details in the docs.</p>
+            <a class="btn btn-ghost btn-block" href="https://github.com/atuljaiswal1246/asha/releases/latest">Get started</a>
+          </article>
+        </div>
+
+        <p class="plans-note">
+          Prefer your own provider? BYOK is always an option — you pay that provider directly
+          and Asha still works. The inference model behind these plans is still being
+          finalised, so the usage limits will be published in the docs before billing starts.
+        </p>
+      </div>
+    </section>
+
+    <!-- Download -->
+    <section class="section section-alt" id="download" aria-labelledby="download-title">
+      <div class="wrap">
+        <p class="eyebrow">Download</p>
+        <h2 id="download-title">Install it and talk.</h2>
+
+        <div class="download-grid">
+          <article class="download-card download-card-ready">
+            <div class="download-head">
+              <span class="os-mark" aria-hidden="true"></span>
+              <div>
+                <h3>Asha for macOS</h3>
+                <p class="download-meta">Version 0.1.0 · Apple Silicon · ~900&nbsp;MB</p>
+              </div>
+            </div>
+            <p>Our everyday build. Everything is bundled, including the voice models, so it works offline once installed.</p>
+            <a class="btn btn-primary btn-block" href="https://github.com/atuljaiswal1246/asha/releases/latest">Download the .dmg</a>
+            <p class="install-note">
+              <strong>First launch:</strong> this build isn't code-signed yet, so macOS will
+              warn you. Open the <code>.dmg</code>, right-click the Asha app, choose
+              <strong>Open</strong>, then confirm.
+            </p>
+          </article>
+
+          <article class="download-card download-card-pending" aria-labelledby="win-title">
+            <div class="download-head">
+              <span class="os-mark os-mark-win" aria-hidden="true"></span>
+              <div>
+                <h3 id="win-title">Asha for Windows</h3>
+                <p class="download-meta">Not published yet</p>
+              </div>
+            </div>
+            <p>We'll publish a Windows build once it has been tested on real hardware. No placeholder download, and no "coming soon" button that goes nowhere.</p>
+            <p class="pending-tag">Pending hardware testing</p>
+          </article>
+        </div>
+
+        <div class="first-run">
+          <h3>What happens on first launch</h3>
+          <ol>
+            <li>Grant microphone access when macOS asks.</li>
+            <li>Add one model key in Settings — that's your bring-your-own-key setup.</li>
+            <li>Talk to it. Or type, if you'd rather.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap wrap-narrow">
+        <p class="eyebrow">FAQ</p>
+        <h2 id="faq-title">Questions developers actually ask.</h2>
+
+        <div class="faq">
+          <details>
+            <summary>Is Asha free?</summary>
+            <p>Yes while in preview. You only pay third parties directly if you use them — your model provider, image provider, and so on. The paid plans ($10 / $20 / $50) add managed inference and the full agent team, with fair-use limits documented in the docs.</p>
+          </details>
+
+          <details>
+            <summary>Do I need an API key?</summary>
+            <p>You don't need an Asha account. You can bring your own key from a model provider (BYOK): paste it into Settings and it stays on your machine. If you'd rather not manage a key, the paid plans cover managed inference instead.</p>
+          </details>
+
+          <details>
+            <summary>What runs locally?</summary>
+            <p>Speech-to-text and text-to-speech run on your Mac, and screen reading is local too. That's what lets the voice loop stay responsive without shipping your audio to a cloud service.</p>
+          </details>
+
+          <details>
+            <summary>Is my data sent anywhere?</summary>
+            <p>Only what you choose to send. With your own key, requests go straight from your Mac to the provider you configured, under their terms. We don't operate an Asha account or an Asha analytics service, and we don't receive your conversations. This website has no analytics or trackers.</p>
+          </details>
+
+          <details>
+            <summary>What are the requirements?</summary>
+            <p>An Apple Silicon Mac (the current build is arm64), a microphone, and one model key. An Intel build can be produced but hasn't been tested, so we don't recommend it yet. The packaged app doesn't declare a minimum macOS version — if it installs and boots for you, it works. Tell us if it doesn't.</p>
+          </details>
+
+          <details>
+            <summary>How do I set up a connector?</summary>
+            <p>Gmail and Google Calendar connect through your own Google project, so the setup is yours to own. Google's public-app verification is still in review, which means these flows currently suit personal and test use. Figma is simpler: paste a personal access token and Asha inspects files over Figma's REST API.</p>
+          </details>
+
+          <details>
+            <summary>How is this different from a chatbot?</summary>
+            <p>A chatbot answers. Asha acts and reports back spoken. It plans a task, delegates pieces to specialist agents, reviews the result, and can touch real things — mail, calendar, files, and generated media. The conversation is the interface; the work is the point.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <span class="brand-mark brand-mark-sm" role="img" aria-label="Asha logo"></span>
+        <p><strong>Asha</strong> — a voice-first assistant for macOS.</p>
+      </div>
+      <nav class="footer-col" aria-label="Product">
+        <h2>Product</h2>
+        <a href="#how">How it works</a>
+        <a href="#why">Why Asha</a>
+        <a href="#onramp">Bring your key</a>
+        <a href="#plans">Plans</a>
+        <a href="#download">Download</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <nav class="footer-col" aria-label="Project">
+        <h2>Project</h2>
+        <a href="https://github.com/atuljaiswal1246/asha">GitHub repository</a>
+        <a href="https://github.com/atuljaiswal1246/asha/releases/latest">Releases</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="ai-disclosure.html">AI disclosure</a>
+      </nav>
+      <div class="footer-col">
+        <h2>Contact</h2>
+        <a href="mailto:atul.j@hummingseo.com">atul.j@hummingseo.com</a>
+        <a href="https://github.com/atuljaiswal1246/asha/issues">Open an issue on GitHub</a>
+      </div>
+    </div>
+    <div class="wrap footer-legal">
+      <p>© 2026 Atul Jaiswal (hummingseo). Free and open source under the <a href="https://github.com/atuljaiswal1246/asha/blob/main/LICENSE">MIT licence</a>.</p>
+      <p>Not affiliated with, or endorsed by, any third-party provider named on this page.</p>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

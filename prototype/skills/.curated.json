@@ -1,0 +1,12 @@
+{
+  "code-review": {
+    "verdict": "accept",
+    "reason": "all guardrails passed",
+    "at": "2026-09-09T14:06:31.679265+00:00"
+  },
+  "hello-world": {
+    "verdict": "accept",
+    "reason": "all guardrails passed",
+    "at": "2026-09-10T13:59:07.805906+00:00"
+  }
+}
