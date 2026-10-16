@@ -144,6 +144,64 @@ def _env(name: str, default: str = "") -> str:
     return v.strip() or default
 
 
+
+def _attach_published(instance: Provider) -> Provider:
+    """Replace the three-row static catalogue with the provider's OWN published list.
+
+    The catalog is informational (the engine never validates against it, any string
+    passes through). But a picker that shows 3 of 465 turns a user's choice into
+    a guess, so the *published* list is fetched here from the same base URL the
+    provider talks to, in the spelling the gateway will accept. On any failure the
+    instance keeps its static catalog (a surfaced "provider hasn't listed its
+    models" is better than a picker with nothing in it) — but nothing is ever
+    invented, split, or cached as a literal.
+    """
+    base = getattr(instance, "base_url", "") or ""
+    base = (base or "").rstrip("/")
+    if not base or getattr(instance, "_models_override", None) is not None:
+        return instance
+    # Mirror the openai-compatible live shape: {base}/models.
+    url = base if base.lower().endswith("/models") else base + "/models"
+    try:
+        import json, urllib.request, urllib.error
+        # OpenAI/OpenRouter sometimes require a user-agent and a key; publishable
+        # lists are public, but adding the configured key harms nothing.
+        headers = {"User-Agent": "Asha/provider-catalog 1.0"}
+        key = str(getattr(instance, "api_key", "") or "").strip()
+        if key:
+            headers["Authorization"] = f"Bearer {key}"
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=10.0) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+    except (urllib.error.URLError, OSError, ValueError, TypeError, AttributeError):
+        return instance
+    entries = payload.get("data") if isinstance(payload, dict) else payload
+    if not isinstance(entries, list) or not entries:
+        return instance
+    imported = []
+    for item in entries:
+        if not isinstance(item, dict) or not item.get("id"):
+            continue
+        mid = str(item["id"])
+        imported.append(ModelInfo(
+            id=mid, provider_id=instance.provider_id, name=str(item.get("name") or mid),
+            tier=tier_for(mid), supports_tools=bool(item.get("supports_tools", True)),
+            context_tokens=int(item.get("context_length") or item.get("context_tokens") or 0),
+        ))
+    if imported:
+        # Mark provenance so anyone reading instance.info() sees this is live.
+        instance._models_override = imported
+    return instance
+
+
+def tier_for(model_id: str) -> str:
+    """Tier derived from the id, not a table. Only the provider's own markers count."""
+    low = (model_id or "").lower()
+    if any(tok in low for tok in ("-free", "/free", "free-")):
+        return "free"
+    return "paid"
+
+
 def get_provider(provider_id: str) -> Provider:
     """Build (and cache) the configured provider instance for *provider_id*.
 
@@ -157,6 +215,7 @@ def get_provider(provider_id: str) -> Provider:
         return cached
 
     instance = _build_provider(pid)
+    instance = _attach_published(instance)
     _INSTANCES[pid] = instance
     return instance
 
