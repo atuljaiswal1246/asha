@@ -5701,8 +5701,13 @@ async def run():
             tag = "applied" if r.get("applied") else ("changes" if r.get("diff") else "no change")
             review = r.get("verdict", "accept")
             review_txt = "" if review == "accept" else f", review={review}"
+            _label = r["model"].split("/")[-1]
+            if (r.get("substituted") and r.get("requested_model")
+                    and r["requested_model"] != r["model"]):
+                _label = (f"requested {r['requested_model']}, "
+                          f"running {_label}")
             await _code_send_bubble(
-                f"{r['model'].split('/')[-1]} — task {r['task_index']} "
+                f"{_label} — task {r['task_index']} "
                 f"[{r['status']}{review_txt}, {tag}] {r['summary'][:180]}"
             )
         await _code_send_bubble(out.get("summary", ""))

@@ -40,7 +40,7 @@ class JsonBlobTests(unittest.TestCase):
 
 
 class PlanPolicyTests(unittest.TestCase):
-    def test_allowed_model_kept_and_bad_model_falls_back(self):
+    def test_allowed_model_kept_and_bad_model_is_not_silently_substituted(self):
         reply = json.dumps({"tasks": [
             {"worker": 1, "goal": "g1", "model": "opencode-go/mimo-v2.5"},
             {"worker": 2, "goal": "g2", "model": "openai/gpt-5"},
@@ -48,7 +48,8 @@ class PlanPolicyTests(unittest.TestCase):
         orch = _FakeOrch([reply])
         plan = orch.plan("do two things")
         self.assertEqual(plan["tasks"][0]["model"], "opencode-go/mimo-v2.5")
-        self.assertIn(plan["tasks"][1]["model"], o.WORKER_MODELS)
+        # fail-closed: the stranger's requested model is preserved, never rewritten.
+        self.assertEqual(plan["tasks"][1]["model"], "openai/gpt-5")
         self.assertEqual([t["_i"] for t in plan["tasks"]], [0, 1])
 
     def test_malformed_plan_yields_no_tasks(self):
