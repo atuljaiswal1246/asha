@@ -185,16 +185,41 @@ class Orchestrator:
         i = task["_i"]
         goal = task.get("goal", "")
         model = task.get("model") or self.model
+        requested_model = task.get("_model_requested") or model
         variant = task.get("variant", "")
         wt = Path(task["_wt"]) if task.get("_wt") else self._worktree(f"task{i}")
         isolated = (wt != self.project)
+        if model not in ALLOWED_MODELS:
+            allowed_txt = ", ".join(GO_MODELS)
+            return {
+                "task_index": i,
+                "goal": goal,
+                "model": model,
+                "requested_model": requested_model,
+                "substituted": False,
+                "escalated": False,
+                "status": "failed",
+                "exit_reason": "model_not_allowed",
+                "verdict": "reject",
+                "issues": [f"model not allowed: {model}. Allowed models only: {allowed_txt}."],
+                "reworks": 0,
+                "verify_cmd": "",
+                "verify_out": "",
+                "summary": (f"model not allowed: {model}. "
+                            f"Allowed models only: {allowed_txt}."),
+                "error": f"model not allowed: {model}",
+                "seconds": 0.0,
+                "worktree": str(wt),
+                "diff": "",
+            }
         res = self._opencode(wt, model, goal, variant=variant, retries=2,
                              cancel=getattr(self, "_cancel", None))
         escalated = False
+        substituted = False
         if not res["ok"] and ESCALATE and model in WORKER_MODELS:
             # Free worker failed → one budget-go retry (user-approved, on failure).
             res = self._opencode(wt, ESCALATE_MODEL, goal, variant=variant)
-            model, escalated = ESCALATE_MODEL, True
+            requested_model, model, escalated, substituted = model, ESCALATE_MODEL, True, True
 
         # B3.2: verify the diff against the goal (+ explicit acceptance check),
         # then bounded multi-round rework until accepted.
@@ -239,6 +264,8 @@ class Orchestrator:
             "task_index": i,
             "goal": goal,
             "model": model,
+            "requested_model": requested_model,
+            "substituted": substituted,
             "escalated": escalated,
             "status": status,
             "exit_reason": ("ok" if res["ok"] else (res.get("error") or "error"))[:120],
@@ -328,10 +355,17 @@ class Orchestrator:
         tasks = (_json_blob(res["text"]) or {}).get("tasks") or []
         for i, t in enumerate(tasks):
             t["_i"] = i
-            # Enforce the approved model policy: the brain cannot pick a costly model.
+            # Fail-closed model policy (launch 2026-10-17): never silently rewrite a
+            # stranger's chosen model. An empty choice keeps a safe default; anything
+            # else that is not on the allowlist is kept verbatim so run_task can refuse
+            # it with a message naming the allowed models instead of substituting.
             w = int(t.get("worker", 1) or 1) - 1
             m = (t.get("model") or "").strip()
-            t["model"] = m if m in ALLOWED_MODELS else WORKER_MODELS[w % len(WORKER_MODELS)]
+            if not m:
+                m = WORKER_MODELS[w % len(WORKER_MODELS)]
+            # no substitution: t["model"] stays as the brain/stranger wrote it.
+            t["model"] = m
+            t["_model_requested"] = t["model"]
         return {"tasks": tasks, "raw": res["text"], "model": self.brain_model}
 
     def run(self, request: str, workers: list[dict] | None = None, apply: bool = False,
