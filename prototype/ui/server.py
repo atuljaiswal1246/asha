@@ -3651,21 +3651,34 @@ class BoundedContextLLM(OpenAILLMService):
             return
         mid = self._selected_model or model or BRAIN_MODEL_ID
         if err is None:
-            if self._selected_model:
-                # Provider exists but is cooling down (recently rate-limited).
-                kind = "rate_limit"
-                msg = "Asha runs on DeepSeek V4.1 Flash, which is busy right now \u2014 try again in a moment."
-            else:
-                kind = "unavailable"
-                msg = "Asha runs on DeepSeek V4.1 Flash, which isn't reachable right now \u2014 check the OpenCode key and try again."
+            kind = "unavailable"
+            msg = ("Asha runs on DeepSeek V4.1 Flash, which isn't reachable right now \u2014 "
+                   "check the OpenCode key and try again.")
         elif _is_rate_limit(err):
             kind = "rate_limit"
             msg = "DeepSeek V4.1 Flash is rate-limited right now \u2014 try again in a moment."
         else:
             code = getattr(err, "status_code", None) or getattr(err, "code", None)
-            if code in (401, 403):
+            detail = str(err)
+            if code == 403 and any(phrase in detail.lower()
+                                    for phrase in ("freetiererror",
+                                                   "free tier can only be used")):
+                kind = "free_tier"
+                msg = "the free tier cannot be used outside OpenCode"
+            elif code == 410 and ("modeldeprecated" in detail.lower()
+                                  or "deprecated" in detail.lower()):
+                kind = "model_deprecated"
+                import re
+                replacement = re.search(r"Use ([A-Za-z0-9./_-]+) instead", detail,
+                                        re.IGNORECASE)
+                if replacement:
+                    msg = ("this model is withdrawn; use "
+                           f"{replacement.group(1)} instead")
+                else:
+                    msg = "this model is withdrawn"
+            elif code in (401, 403):
                 kind = "auth"
-                msg = "That model rejected your key \u2014 check your OpenCode key and try again."
+                msg = "this key does not have access to the Go tier \u2014 check your OpenCode key."
             else:
                 kind = "error"
                 msg = "Asha couldn't reach the model. Try again in a moment."
