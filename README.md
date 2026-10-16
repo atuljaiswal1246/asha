@@ -29,8 +29,8 @@ means do not count on it yet.
 | Feature | Status | Notes / where |
 |---|---|---|
 | Voice conversation (push-to-talk, interrupt/barge-in) | Working | `prototype/ui/server.py`, frozen VAD tuning |
-| On-device speech recognition (Moonshine) | Working | `server.py:6920` |
-| On-device speech synthesis (Kokoro) | Working | `GuardedKokoroTTSService`, `server.py:4688` |
+| On-device speech recognition (Moonshine) | Working | `server.py:6933` |
+| On-device speech synthesis (Kokoro) | Working | `GuardedKokoroTTSService`, `server.py:4701` |
 | Backchannel ("mm-hm" while it thinks) | Working | `backchannel.py` |
 | Native agent loop: read/write/edit files, shell, search, LSP | Working | `agent_loop.py` |
 | Plan mode (research only), skills (`SKILL.md`), memory | Working | `skills.py`, `memory.py` |
@@ -50,7 +50,7 @@ means do not count on it yet.
 
 Frozen by the project owner and not to be changed as a side effect: VAD tuning
 (`VAD_START_SECS=0.25`, `VAD_STOP_SECS=0.25`, `VAD_CONFIDENCE=0.75`,
-`VAD_MIN_VOLUME=0.7`) — see the defaults in `prototype/ui/server.py:7714-7717`.
+`VAD_MIN_VOLUME=0.7`) — see the defaults in `prototype/ui/server.py:7732-7735`.
 
 ### What this does not do yet
 
@@ -61,8 +61,16 @@ message instead of after it fails:
 - **Free-tier OpenCode keys do not work.** The gateway refuses third-party apps
   on the free tier by provider policy. You need a paid (Go) key, or a key from
   another listed provider (`server.py:155`). A free key fails at the gateway,
-  and the app will tell you the key was rejected — it cannot tell a policy
-  refusal from a bad key, because the provider does not say which.
+  and Asha names the refusal for what it is (`server.py:3661-3683` splits the
+  cause: a free-tier refusal says so, a withdrawn model names its replacement,
+  and only a bad key is called a bad key).
+- **Not every published model answers.** On OpenCode go, 28 of 37 published
+  models answer; the other 9 refuse with "Model does not support this
+  protocol" — the gateway lists them but does not speak the chat API to them.
+  That is a provider property, not a fault in Asha; pick from the ones that
+  answer. On OpenRouter, 465 models are published and the free tier answers
+  (8 of 18 free-tier models on a key that has never bought anything) —
+  that is the case most strangers arrive in.
 - **There is no Mac installer.** Run from source, use the release `.dmg`, or
   build the app with `prototype/ui/macapp/build_app.sh`.
 - The wake word, hosted plans and the quota gateway are pending (see the table
@@ -171,7 +179,7 @@ Run the test gate with:
 - **On your Mac:** speech recognition (Moonshine), speech synthesis (Kokoro),
   voice-activity detection, screen capture with on-device OCR, and camera
   capture. Bundled builds point the speech models at shipped files
-  (`server.py:6927-6931`; unset means a normal cached download, as in dev).
+  (`server.py:6941-6943`; unset means a normal cached download, as in dev).
   Packaged builds point at the bundled models so voice downloads nothing at
   runtime when those variables are set.
 - **Over the network, only when used:** the model provider you configured
