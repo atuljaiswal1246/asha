@@ -9,9 +9,10 @@ on-device, plans the task, runs a small team of agents (files, shell, web,
 connectors, media), and answers out loud.
 
 It is in preview and BYOK: the app is free, you bring your own model key, and
-we never see it. An existing OpenCode (or OpenRouter) key works as-is — keep
-your existing plan, add a voice; there is no Asha account and no server in the
-middle.
+we never see it. A **paid** OpenCode key works as-is — keep your existing plan,
+add a voice; there is no Asha account and no server in the middle. (A free-tier
+OpenCode key does not: OpenCode refuses third-party apps on the free tier by
+policy, so learn that here, not after your first message fails.)
 
 Asha is open source under the [MIT licence](LICENSE) at
 <https://github.com/atuljaiswal1246/asha>. Contributions are welcome — see
@@ -28,8 +29,8 @@ means do not count on it yet.
 | Feature | Status | Notes / where |
 |---|---|---|
 | Voice conversation (push-to-talk, interrupt/barge-in) | Working | `prototype/ui/server.py`, frozen VAD tuning |
-| On-device speech recognition (Moonshine) | Working | `server.py:6910` |
-| On-device speech synthesis (Kokoro) | Working | `server.py:6916` |
+| On-device speech recognition (Moonshine) | Working | `server.py:6933` |
+| On-device speech synthesis (Kokoro) | Working | `GuardedKokoroTTSService`, `server.py:4701` |
 | Backchannel ("mm-hm" while it thinks) | Working | `backchannel.py` |
 | Native agent loop: read/write/edit files, shell, search, LSP | Working | `agent_loop.py` |
 | Plan mode (research only), skills (`SKILL.md`), memory | Working | `skills.py`, `memory.py` |
@@ -49,7 +50,31 @@ means do not count on it yet.
 
 Frozen by the project owner and not to be changed as a side effect: VAD tuning
 (`VAD_START_SECS=0.25`, `VAD_STOP_SECS=0.25`, `VAD_CONFIDENCE=0.75`,
-`VAD_MIN_VOLUME=0.7`) — see the defaults in `prototype/ui/server.py:7709-7712`.
+`VAD_MIN_VOLUME=0.7`) — see the defaults in `prototype/ui/server.py:7732-7735`.
+
+### What this does not do yet
+
+Status is derived from the code, not from marketing — and that includes the
+limits, which are stated here so a stranger meets them before their first
+message instead of after it fails:
+
+- **Free-tier OpenCode keys do not work.** The gateway refuses third-party apps
+  on the free tier by provider policy. You need a paid (Go) key, or a key from
+  another listed provider (`server.py:155`). A free key fails at the gateway,
+  and Asha names the refusal for what it is (`server.py:3661-3683` splits the
+  cause: a free-tier refusal says so, a withdrawn model names its replacement,
+  and only a bad key is called a bad key).
+- **Not every published model answers.** On OpenCode go, 28 of 37 published
+  models answer; the other 9 refuse with "Model does not support this
+  protocol" — the gateway lists them but does not speak the chat API to them.
+  That is a provider property, not a fault in Asha; pick from the ones that
+  answer. On OpenRouter, 465 models are published and the free tier answers
+  (8 of 18 free-tier models on a key that has never bought anything) —
+  that is the case most strangers arrive in.
+- **There is no Mac installer.** Run from source, use the release `.dmg`, or
+  build the app with `prototype/ui/macapp/build_app.sh`.
+- The wake word, hosted plans and the quota gateway are pending (see the table
+  above) — the current launch is BYOK-only.
 
 ## Requirements
 
@@ -100,7 +125,9 @@ There are also 24/7 supervisor and native-window scripts
 app running in the background. They hard-code an absolute checkout path from the
 maintainer's machine, so they only run from that exact location; edit the path at
 the top of the script to use them from your own checkout (see "Known
-limitations" below).
+limitations" below). There is no Mac installer script: on a Mac, either run
+from source as above, use the `.dmg` from the releases page, or build the app
+yourself with `prototype/ui/macapp/build_app.sh`.
 
 Run the test gate with:
 
@@ -123,17 +150,21 @@ Run the test gate with:
 
 - **What the key is for.** Asha's thinking is a hosted model, reached over
   HTTPS with your key. The default brain is `deepseek-v4.1-flash`
-  (`server.py:202`) on the OpenCode go gateway (`server.py:205`), and the setup
+  (`server.py:206`) on the OpenCode go gateway (`server.py:209`), and the setup
   screen asks for an **OpenCode key** (`prototype/ui/static/index.html:431`).
-  Get one at opencode.ai: sign in, open account settings, API keys, create a key
-  (`index.html:448-450`).
+  It must be a key the provider bills: a free-tier OpenCode key is refused at
+  the gateway by OpenCode's own policy, before Asha can answer. OpenRouter,
+  OpenAI, Anthropic, Gemini, Groq and xAI keys are also reachable
+  (`server.py:155` lists all ten providers), each under its own provider's terms.
+  Get an OpenCode key at opencode.ai: sign in, open account settings, API keys,
+  create a key (`index.html:448-450`).
 - **Keys stay on your machine.** For BYOK there is no Asha account and no
   Asha server in the request path — the app calls the provider you configured
   directly. The setup screen says it plainly: "Stored only on this Mac. It
   never leaves your machine." (`index.html:460`).
 - **Where the key goes.** The first-run screen sends `provider_key_set`; the
   server writes it to the app's `.env` via `_provider_key_save()`
-  (`server.py:457`, `_ENV_FILE` at `server.py:454`):
+  (`server.py:462`, `_ENV_FILE` at `server.py:459`):
   - running from source: `prototype/.env` (gitignored);
   - packaged app: `Asha.app/Contents/Resources/app/.env`.
   Additional providers (OpenRouter, OpenAI, Anthropic, Gemini, xAI) can be added
@@ -147,8 +178,10 @@ Run the test gate with:
 
 - **On your Mac:** speech recognition (Moonshine), speech synthesis (Kokoro),
   voice-activity detection, screen capture with on-device OCR, and camera
-  capture. Packaged builds point at the bundled models so voice downloads
-  nothing at runtime (`Launcher.swift:61-63`, `build_macos.sh:76-90`).
+  capture. Bundled builds point the speech models at shipped files
+  (`server.py:6941-6943`; unset means a normal cached download, as in dev).
+  Packaged builds point at the bundled models so voice downloads nothing at
+  runtime when those variables are set.
 - **Over the network, only when used:** the model provider you configured
   (OpenCode's gateway by default), web search (Exa), image generation
   (Leonardo), Google connectors, Figma's REST API, and any MCP server you add.
