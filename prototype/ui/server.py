@@ -7955,7 +7955,10 @@ async def run():
 if __name__ == "__main__":
     import signal
 
-    PID_FILE = "/tmp/asha-server.pid"
+    # ASHA_PID_FILE makes the file per-instance, and DEFAULTS TO TODAY'S PATH so that anything
+    # relying on the current behaviour is unchanged. The intent of the guard survives: two
+    # instances on the same PID file ARE duplicates, and that is still refused.
+    PID_FILE = os.environ.get("ASHA_PID_FILE", "").strip() or "/tmp/asha-server.pid"
 
     def _read_pid():
         try:
@@ -7965,13 +7968,36 @@ if __name__ == "__main__":
             return None
 
     def _is_alive(pid):
+        """Is that pid a process that can still serve? NOT merely: does the pid exist.
+
+        MEASURED FAULT, 2026-09-28 18:21, and it is the reason the owner could not see a single
+        thing all evening. `os.kill(pid, 0)` asks "does this pid exist", and the answer for a
+        ZOMBIE is YES - the entry stays in the process table until its parent reaps it, which for
+        a daemonised launcher can be never. So the lock file said "already running", `_is_alive`
+        said True, and the app refused to start - with nothing running. Measured: pid 16008 was
+        `<defunct>`, every port was dead, and `python server.py` printed "Another Asha server is
+        already running" and exited.
+
+        A zombie is a corpse with a name tag on. So: existence is not liveness, and the state has
+        to be read. And if the state cannot be read, this returns True - because a lock that
+        cannot be checked must not be the thing that stops the product from starting.
+        """
         if not pid:
             return False
         try:
             os.kill(pid, 0)
-            return True
         except OSError:
             return False
+        # it exists. Is it a corpse?
+        try:
+            import subprocess
+            state = subprocess.run(["ps", "-o", "state=", "-p", str(pid)], capture_output=True,
+                                   text=True, timeout=6, check=False).stdout.strip()
+        except Exception:
+            return True  # cannot tell -> do not refuse to start
+        if not state:
+            return False  # ps says nothing: gone between the two calls
+        return not state.startswith("Z")
 
     existing = _read_pid()
     if existing and _is_alive(existing):
