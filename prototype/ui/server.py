@@ -46,7 +46,11 @@ from pipecat.turns.user_turn_strategies import UserTurnStrategies
 from pipecat.transports.websocket.server import (
     SingleClientWebsocketServerParams,
     SingleClientWebsocketServerTransport,
+    SingleClientWebsocketServerInputTransport,
+    SingleClientWebsocketServerOutputTransport,
 )
+from multi_session import Fanout as _Fanout
+from multi_session import build as _build_multi_session
 from pipecat.workers.runner import WorkerRunner
 
 from pipecat.adapters.schemas.function_schema import FunctionSchema
@@ -6890,7 +6894,13 @@ async def run():
         except Exception:
             pass
 
-    transport = SingleClientWebsocketServerTransport(
+    _ws_fanout = _Fanout()
+    _MultiTransport = _build_multi_session(
+        SingleClientWebsocketServerTransport,
+        SingleClientWebsocketServerInputTransport,
+        SingleClientWebsocketServerOutputTransport,
+        _ws_fanout)
+    transport = _MultiTransport(
         params=SingleClientWebsocketServerParams(
             serializer=UIFrameSerializer(
                 text_cb=on_text,
@@ -7811,8 +7821,10 @@ async def run():
 
     @transport.event_handler("on_client_connected")
     async def _on_client_connected(transport, websocket):
-        ws_holder["ws"] = websocket
-        context.set_messages([])
+        _is_first = len(_ws_fanout) == 0
+        ws_holder["ws"] = _ws_fanout
+        if _is_first:
+            context.set_messages([])
         session_holder["id"] = session_store.new_session({"client": "ws"})
         logger.info(f"[SESSION] opened {session_holder['id']}")
         if tts:
