@@ -68,9 +68,12 @@ message instead of after it fails:
   models answer; the other 9 refuse with "Model does not support this
   protocol" — the gateway lists them but does not speak the chat API to them.
   That is a provider property, not a fault in Asha; pick from the ones that
-  answer. On OpenRouter, 465 models are published and the free tier answers
-  (8 of 18 free-tier models on a key that has never bought anything) —
-  that is the case most strangers arrive in.
+  answer. On OpenRouter the free tier answers through Asha — measured
+  2026-10-27 on a key with zero credits, twice: 7–8 of the 16 free models
+  published that day replied and none refused; the rest were rate-limited or
+  permission-gated, so that count is a floor set by throttling, not a ceiling
+  set by the models. The catalogue moves (465 → 463 published and 18 → 16 free
+  between two readings); read any count here as a dated snapshot.
 - **There is no Mac installer.** Run from source, use the release `.dmg`, or
   build the app with `prototype/ui/macapp/build_app.sh`.
 - The wake word, hosted plans and the quota gateway are pending (see the table
