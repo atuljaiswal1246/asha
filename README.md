@@ -29,8 +29,8 @@ means do not count on it yet.
 | Feature | Status | Notes / where |
 |---|---|---|
 | Voice conversation (push-to-talk, interrupt/barge-in) | Working | `prototype/ui/server.py`, frozen VAD tuning |
-| On-device speech recognition (Moonshine) | Working | `server.py:6933` |
-| On-device speech synthesis (Kokoro) | Working | `GuardedKokoroTTSService`, `server.py:4701` |
+| On-device speech recognition (Moonshine) | Working | `server.py:6943` |
+| On-device speech synthesis (Kokoro) | Working | `GuardedKokoroTTSService`, `server.py:4705` |
 | Backchannel ("mm-hm" while it thinks) | Working | `backchannel.py` |
 | Native agent loop: read/write/edit files, shell, search, LSP | Working | `agent_loop.py` |
 | Plan mode (research only), skills (`SKILL.md`), memory | Working | `skills.py`, `memory.py` |
@@ -50,7 +50,7 @@ means do not count on it yet.
 
 Frozen by the project owner and not to be changed as a side effect: VAD tuning
 (`VAD_START_SECS=0.25`, `VAD_STOP_SECS=0.25`, `VAD_CONFIDENCE=0.75`,
-`VAD_MIN_VOLUME=0.7`) — see the defaults in `prototype/ui/server.py:7732-7735`.
+`VAD_MIN_VOLUME=0.7`) — see the defaults in `prototype/ui/server.py:7742-7745`.
 
 ### What this does not do yet
 
@@ -60,8 +60,8 @@ message instead of after it fails:
 
 - **Free-tier OpenCode keys do not work.** The gateway refuses third-party apps
   on the free tier by provider policy. You need a paid (Go) key, or a key from
-  another listed provider (`server.py:155`). A free key fails at the gateway,
-  and Asha names the refusal for what it is (`server.py:3661-3683` splits the
+  another listed provider (`server.py:159`). A free key fails at the gateway,
+  and Asha names the refusal for what it is (`server.py:3667-3685` splits the
   cause: a free-tier refusal says so, a withdrawn model names its replacement,
   and only a bad key is called a bad key).
 - **Not every published model answers.** On OpenCode go, 28 of 37 published
@@ -150,12 +150,12 @@ Run the test gate with:
 
 - **What the key is for.** Asha's thinking is a hosted model, reached over
   HTTPS with your key. The default brain is `deepseek-v4.1-flash`
-  (`server.py:206`) on the OpenCode go gateway (`server.py:209`), and the setup
+  (`server.py:210`) on the OpenCode go gateway (`server.py:213`), and the setup
   screen asks for an **OpenCode key** (`prototype/ui/static/index.html:431`).
   It must be a key the provider bills: a free-tier OpenCode key is refused at
   the gateway by OpenCode's own policy, before Asha can answer. OpenRouter,
   OpenAI, Anthropic, Gemini, Groq and xAI keys are also reachable
-  (`server.py:155` lists all ten providers), each under its own provider's terms.
+  (`server.py:159` lists all ten providers), each under its own provider's terms.
   Get an OpenCode key at opencode.ai: sign in, open account settings, API keys,
   create a key (`index.html:448-450`).
 - **Keys stay on your machine.** For BYOK there is no Asha account and no
@@ -164,7 +164,7 @@ Run the test gate with:
   never leaves your machine." (`index.html:460`).
 - **Where the key goes.** The first-run screen sends `provider_key_set`; the
   server writes it to the app's `.env` via `_provider_key_save()`
-  (`server.py:462`, `_ENV_FILE` at `server.py:459`):
+  (`server.py:466`, `_ENV_FILE` at `server.py:463`):
   - running from source: `prototype/.env` (gitignored);
   - packaged app: `Asha.app/Contents/Resources/app/.env`.
   Additional providers (OpenRouter, OpenAI, Anthropic, Gemini, xAI) can be added
@@ -179,7 +179,7 @@ Run the test gate with:
 - **On your Mac:** speech recognition (Moonshine), speech synthesis (Kokoro),
   voice-activity detection, screen capture with on-device OCR, and camera
   capture. Bundled builds point the speech models at shipped files
-  (`server.py:6941-6943`; unset means a normal cached download, as in dev).
+  (`server.py:6951-6953`; unset means a normal cached download, as in dev).
   Packaged builds point at the bundled models so voice downloads nothing at
   runtime when those variables are set.
 - **Over the network, only when used:** the model provider you configured
